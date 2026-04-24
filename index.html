@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts — a modern tribute to Istanbul's grand café culture.">
+  <meta name="theme-color" content="#C4963E">
+
+  <!-- iOS standalone meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Turkiana · Turkish Café &amp; Desserts</title>
+
+  <!-- Eliminate theme flash -->
+  <script>
+    (function(){
+      var d = localStorage.getItem('tk-dark');
+      if (d === 'false' || (!d && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <!-- Preconnect for Google Fonts and QR API -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://api.qrserver.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Skip link -->
+  <a href="#menu" class="skip-link">Skip to menu</a>
+
+  <!-- ARIA live region -->
+  <div id="liveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- Ambient background orbs -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ====================================================
+       NAVIGATION
+  ==================================================== -->
+  <header role="banner">
+    <nav class="nav" id="mainNav" aria-label="Main navigation">
+      <a href="#" class="nav-brand" aria-current="page" lang="en">TURKI<span>ANA</span></a>
+      <div class="nav-actions">
+        <button class="icon-btn" id="langToggle" aria-label="Switch to Arabic" title="Switch language">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="themeToggle" aria-label="Switch to light mode" title="Toggle theme">
+          <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+        <button class="btn btn-gold" id="qrBtn" style="padding:0.6rem 1.2rem; font-size:0.68rem;">QR Menu</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ====================================================
+         HERO (full screen, no scroll hint)
+    ==================================================== -->
+    <section class="hero" aria-label="Welcome to Turkiana">
+      <div class="hero-pattern" aria-hidden="true"></div>
+      <div class="hero-bg" id="heroBg" role="img" aria-label="Luxury Turkish coffee and baklava"></div>
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow" id="heroEyebrow">Est. Ottoman Heritage</p>
+        <!-- Title initially contains static text for SEO; JS replaces with animated spans -->
+        <h1 class="hero-title" id="heroTitle">TURKIANA</h1>
+        <p class="hero-tagline" id="heroTagline">Luxury in Every Sip of Tradition</p>
+        <div class="hero-actions">
+          <button class="btn btn-gold" id="viewMenuBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+            </svg>
+            <span id="viewMenuLabel">View Menu</span>
+          </button>
+          <button class="btn btn-ghost" id="herQrBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+              <path d="M14 14h.01M14 17h3M17 14v3M20 17v.01M20 14v.01"/>
+            </svg>
+            QR Code
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         MARQUEE TICKER (directly under hero)
+    ==================================================== -->
+    <div class="ticker" aria-hidden="true" id="tickerEl">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+
+    <!-- ====================================================
+         ABOUT
+    ==================================================== -->
+    <section class="about" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-inner">
+          <div class="about-text-block fade-in">
+            <p class="section-label" id="aboutLabel">Our Heritage</p>
+            <h2 class="section-title" id="about-heading">
+              Where Ottoman<br><em>Heritage</em> meets<br>Modern Craft
+            </h2>
+            <div class="ornament" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+            </div>
+            <p id="aboutP1">Turkiana is a tribute to the centuries-old Turkish coffee culture, reimagined through a contemporary lens. Every cup, every bite of baklava is crafted with precision, served in an ambiance of marble, gold, and warm candlelight.</p>
+            <p id="aboutP2">A destination for those who seek the finest — from our signature brews to hand-rolled baklava, we bring Istanbul's grand café tradition to the world's most discerning corners.</p>
+            <div class="about-stat-grid">
+              <div class="about-stat">
+                <div class="about-stat-num" data-counter="70" data-suffix="+">0</div>
+                <div class="about-stat-label" id="statLabel1">Menu Items</div>
+              </div>
+              <div class="about-stat">
+                <div class="about-stat-num" data-counter="9">0</div>
+                <div class="about-stat-label" id="statLabel2">Categories</div>
+              </div>
+              <div class="about-stat">
+                <div class="about-stat-num">∞</div>
+                <div class="about-stat-label" id="statLabel3">Stories</div>
+              </div>
+            </div>
+          </div>
+          <div class="about-visual fade-in" aria-hidden="true">
+            <div class="about-visual-bg"></div>
+            <div class="about-visual-caption" id="aboutCaption">Hand-crafted Ottoman baklava, daily</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         MENU
+    ==================================================== -->
+    <section id="menu" class="menu-section" aria-labelledby="menu-heading">
+      <div class="container">
+        <div class="menu-header fade-in">
+          <p class="section-label" id="menuLabel">Selections</p>
+          <h2 class="section-title" id="menu-heading">Our <em>Menu</em></h2>
+        </div>
+
+        <div class="category-scroller" role="group" aria-label="Filter by category" aria-controls="menuGrid" id="categoryScroller"></div>
+
+        <div class="filter-toolbar" role="search">
+          <div class="search-field">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="search" id="searchInput" placeholder="Search flavours…" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search menu items" aria-controls="menuGrid">
+            <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+          </div>
+          <div class="search-divider" aria-hidden="true"></div>
+          <span class="result-count" id="resultCount" role="status" aria-live="polite"></span>
+        </div>
+
+        <div class="menu-grid is-loading" id="menuGrid" aria-label="Menu items" aria-busy="true"></div>
+
+        <div class="empty-state" id="emptyState" role="status" aria-live="polite">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <line x1="8" y1="11" x2="14" y2="11"/>
+          </svg>
+          <p class="empty-state-title" id="emptyTitle">Nothing found</p>
+          <p id="emptySub">Try a different search or browse all categories.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====================================================
+       FOOTER
+  ==================================================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand" lang="en">TURKI<span>ANA</span></div>
+      <p class="footer-tagline" id="footerTagline">Luxury in Every Sip of Tradition</p>
+      <div class="ornament" aria-hidden="true" style="max-width:300px;margin:0 auto 1.5rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      </div>
+      <p class="footer-copy">© Turkiana — Timeless Turkish Indulgence</p>
+    </div>
+  </footer>
+
+  <!-- Mobile FAB -->
+  <div class="mobile-fab" aria-hidden="true">
+    <button class="btn btn-gold" id="mobileFab">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+      </svg>
+      <span id="fabLabel">View Menu</span>
+    </button>
+  </div>
+
+  <!-- QR Modal -->
+  <dialog class="qr-modal" id="qrModal" aria-labelledby="qrTitle" aria-describedby="qrDesc">
+    <div class="modal-inner">
+      <h2 id="qrTitle">Scan to Browse</h2>
+      <p id="qrDesc">Point your camera at the code below for the full Turkiana menu experience.</p>
+      <div class="qr-frame">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://turkianacafe-ux.github.io/Turkiana/"
+             alt="QR code for Turkiana menu" width="200" height="200" loading="lazy"
+             onerror="this.parentElement.innerHTML='<p style=color:var(--c-text-soft);padding:1rem>QR code unavailable</p>'">
+      </div>
+      <button class="btn btn-gold" id="closeModal" style="width:100%;justify-content:center;" autofocus>
+        <span id="closeModalLabel">Close</span>
+      </button>
+    </div>
+  </dialog>
+
+  <!-- Item Detail Modal -->
+  <dialog class="item-modal" id="itemModal" aria-labelledby="itemModalTitle">
+    <div class="item-modal-inner">
+      <div class="item-img-wrapper" id="itemImgWrapper"></div>
+      <div class="item-details">
+        <h2 id="itemModalTitle"></h2>
+        <div class="item-price" id="itemModalPrice"></div>
+        <p class="item-desc" id="itemModalDesc"></p>
+        <div class="item-meta-row">
+          <span id="itemModalCal"></span>
+          <div class="card-diet-icons" id="itemModalDiet"></div>
+        </div>
+        <button class="btn btn-gold" id="itemCloseModal" style="align-self: flex-start;">
+          <span id="itemCloseLabel">Close</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Application logic -->
+  <script src="app.js" defer></script>
+</body>
+</html>
