@@ -51,13 +51,15 @@
     {id:'cafe9', cat:'cafe',      en:'White Mocha Hot & Ice',           ar:'وايت موكا',                  descEn:'White chocolate blended…',                                  descAr:'شوكولاتة بيضاء ممزوجة بالإسبريسو والحليب.', price:32, img:'Latte.jfif',                cal:'260 kcal',diet:['contains-dairy'],                                badge:null},
     {id:'cafe10',cat:'cafe',      en:'Mocha Hot & Ice',                 ar:'موكا',                       descEn:'Dark chocolate and bold espresso…',                         descAr:'شوكولاتة داكنة وإسبريسو قوي.', price:32, img:'Latte.jfif',                cal:'260 kcal',diet:['contains-dairy'],                                badge:null},
     {id:'cafe11',cat:'cafe',      en:'Flat White Hot & Ice',            ar:'فلات وايت',                  descEn:'Double ristretto with silky…',                              descAr:'إسبريسو مزدوج مع حليب مخملي ناعم.', price:27, img:'Flatwhite.jfif',             cal:'140 kcal',diet:['contains-dairy'],                                badge:null},
-    {id:'cafe14',cat:'cafe',      en:'Espresso Macchiato',              ar:'ماكياتو',                    descEn:'Espresso marked with a delicate…',                          descAr:'إسبريسو مع لمسة من رغوة الحليب.', price:24, img:'Espressomachiatto.jfif',                cal:'60 kcal', diet:['contains-dairy'],                                badge:null},
+    {id:'cafe14',cat:'cafe',      en:'Espresso Macchiato',              ar:'ماكياتو',                    descEn:'Espresso marked with a delicate…',                          descAr:'إسبريسو مع لمسة من رغوة الحليب.', price:24, img:'Latte.jfif',                cal:'60 kcal', diet:['contains-dairy'],                                badge:null},
     {id:'cafe15',cat:'cafe',      en:'Espresso Single',                 ar:'إسبريسو مفرد',               descEn:'Pure concentrated coffee…',                                 descAr:'جرعة إسبريسو مركزة نقية.', price:18, img:'Espresso.jfif',              cal:'3 kcal',  diet:['vegan'],                                         badge:null},
     {id:'cafe17',cat:'cafe',      en:'Americano Hot & Ice',             ar:'أمريكانو',                   descEn:'Espresso pulled long…',                                     descAr:'إسبريسو ممتد بالماء الساخن.', price:21, img:'Americano.jfif',             cal:'5 kcal',  diet:['vegan'],                                         badge:null},
     {id:'cafe18',cat:'cafe',      en:'Hot Chocolate',                   ar:'هوت شوكولاتة',               descEn:'Artisanal dark cocoa…',                                     descAr:'كاكاو داكن حرفي مذاب في الحليب الدافئ.', price:36, img:'Latte.jfif',                cal:'360 kcal',diet:['contains-dairy'],                                badge:null},
-    {id:'cafe19', cat:'cafe', en:'Piccolo Latte',            ar:'بيكولو لاتيه',           descEn:'A small, intense latte with a ristretto shot…',             descAr:'لاتيه صغير وقوي بجرعة ريستريتو.',         price:26, img:'Piccololatte',            cal:'110 kcal', diet:['contains-dairy'],           badge:null},
-{id:'cafe20', cat:'cafe', en:'Pistachio Latte',           ar:'لاتيه الفستق',           descEn:'Creamy latte infused with real pistachio butter…',          descAr:'لاتيه كريمي مع زبدة الفستق الحقيقية.',      price:34, img:'Pistachiolatte',           cal:'190 kcal', diet:['contains-dairy','contains-nuts'], badge:null},
-{id:'cafe21', cat:'cafe', en:'Tiramisu Latte',            ar:'لاتيه تيراميسو',        descEn:'Dessert in a cup: mascarpone, espresso & cocoa latte…',    descAr:'حلى في فنجان: ماسكاربوني، إسبريسو وكاكاو.', price:34, img:'Tiramisulatte',            cal:'190 kcal', diet:['contains-dairy'],           badge:null},
+    // *** THREE NEW DRINKS ***
+    {id:'cafe19', cat:'cafe', en:'Piccolo Latte',            ar:'بيكولو لاتيه',           descEn:'A small, intense latte with a ristretto shot…',              descAr:'لاتيه صغير وقوي بجرعة ريستريتو.',                  price:26, img:'Piccololatte.jfif',        cal:'110 kcal', diet:['contains-dairy'],                badge:null},
+    {id:'cafe20', cat:'cafe', en:'Pistachio Latte',           ar:'لاتيه الفستق',           descEn:'Creamy latte infused with real pistachio butter…',           descAr:'لاتيه كريمي مع زبدة الفستق الحقيقية.',              price:34, img:'Pistachiolatte.jfif',       cal:'190 kcal', diet:['contains-dairy','contains-nuts'],  badge:null},
+    {id:'cafe21', cat:'cafe', en:'Tiramisu Latte',            ar:'لاتيه تيراميسو',        descEn:'Dessert in a cup: mascarpone, espresso & cocoa latte…',     descAr:'حلى في فنجان: ماسكاربوني، إسبريسو وكاكاو.',          price:34, img:'Tiramisulatte.jfif',        cal:'190 kcal', diet:['contains-dairy'],                badge:null},
+
     {id:'spec1', cat:'specialty', en:'V60 Pour Over',                   ar:'V60 بور أوفر',               descEn:'Single origin beans…',                                      descAr:'حبوب قهوة مختصة تُحضر بالتقطير اليدوي.', price:33, img:'V60.webp',                  cal:'2 kcal',  diet:['vegan'],                                         badge:'signature'},
     {id:'spec2', cat:'specialty', en:'Ice Drip',                        ar:'آيس دريب',                   descEn:'8-hour cold drip extraction…',                              descAr:'استخلاص بطيء بالتنقيط على الثلج لمدة 8 ساعات.', price:35, img:'Icedrip.jpg',               cal:'2 kcal',  diet:['vegan'],                                         badge:'signature'},
     {id:'spec3', cat:'specialty', en:'Cold Brew',                       ar:'كولد برو',                   descEn:'18+ hour steep — ultra smooth…',                           descAr:'نقع بارد لأكثر من 18 ساعة لقهوة ناعمة كالحرير.', price:37, img:'Coldbrew.webp',              cal:'2 kcal',  diet:['vegan'],                                         badge:'bestseller'},
@@ -81,7 +83,7 @@
     {id:'bak17', cat:'baklava',   en:'Mango Cake',                      ar:'كيكة المانجو',               descEn:'Light sponge cake with fresh mango…',                      descAr:'كيك إسفنجي خفيف بقطع المانجو الطازجة.', price:45, img:'Mangocake.jfif',              cal:'450 kcal',diet:['contains-dairy'],                                badge:null},
     {id:'bak18', cat:'baklava',   en:'Pistachio Cake',                  ar:'كيكة الفستق',                descEn:'Rich pistachio cake…',                                     descAr:'كيك فستق غني بطبقات كريمة الفستق.', price:45, img:'Pistachiocake.webp',         cal:'530 kcal',diet:['contains-dairy','contains-nuts'],               badge:null},
     {id:'bak19', cat:'baklava',   en:'San Sebastian Cheesecake',        ar:'تشيزكيك سان سيباستيان',      descEn:'Burnt Basque cheesecake…',                                 descAr:'تشيز كيك باسك محروق الوجه، طري من الداخل.', price:45, img:'Sansebastian.jfif',           cal:'480 kcal',diet:['contains-dairy'],                                badge:null},
-    {id:'bak20', cat:'baklava',   en:'Fanzuella Sweet',                 ar:'فانزويلا سويت',              descEn:'Sweet creamy dessert…',                                    descAr:'حلى كريمي حلو مع لمسة مكسرات.', price:45, img:'Fanzuella.jfif',              cal:'350 kcal',diet:['contains-dairy','contains-dairy','contains-nuts'], badge:null},
+    {id:'bak20', cat:'baklava',   en:'Fanzuella Sweet',                 ar:'فانزويلا سويت',              descEn:'Sweet creamy dessert…',                                    descAr:'حلى كريمي حلو مع لمسة مكسرات.', price:45, img:'Fanzuella.jfif',              cal:'350 kcal',diet:['contains-dairy','contains-nuts'],               badge:null},
     {id:'bak21', cat:'baklava',   en:'Trileche',                        ar:'تريليتشي',                   descEn:'Soft sponge soaked in three kinds…',                       descAr:'كيك إسفنجي منقوع بثلاثة أنواع حليب.', price:45, img:'Trileche.jfif',               cal:'400 kcal',diet:['contains-dairy'],                                badge:null},
     {id:'snack01',cat:'snacks',   en:'Turkish Ice Cream',               ar:'آيس كريم تركي',              descEn:'Classic stretchy dondurma…',                                descAr:'دوندورما تركية كلاسيكية قابلة للمط.', price:27, img:'Icecreamcup.jfif',            cal:'210 kcal',diet:['contains-dairy'],                                badge:null},
     {id:'snack1',cat:'snacks',    en:'Nuts Stand — Tall',               ar:'مكسرات – ستاند كبير',        descEn:'Premium roasted nuts…',                                     descAr:'مكسرات فاخرة محمصة تقدم في ستاند كبير.', price:99, img:'Tallnuts.jfif',               cal:'300 kcal',diet:['contains-nuts'],                                 badge:null},
@@ -99,7 +101,8 @@
   const I18N = {
     en: {
       tagline:'Luxury in Every Sip of Tradition', eyebrow:'Est. Ottoman Heritage',
-      viewMenu:'View Menu', aboutLabel:'Our Heritage', menuLabel:'Selections',
+      viewMenu:'View Menu', backToHome:'Home',
+      aboutLabel:'Our Heritage', menuLabel:'Selections',
       aboutCaption:'Hand-crafted Ottoman baklava, daily',
       aboutP1:"Turkiana is a tribute to the centuries-old Turkish coffee culture, reimagined through a contemporary lens. Every cup, every bite of baklava is crafted with precision, served in an ambiance of marble, gold, and warm candlelight.",
       aboutP2:"A destination for those who seek the finest — from our signature brews to hand-rolled baklava, we bring Istanbul's grand café tradition to the world's most discerning corners.",
@@ -113,7 +116,8 @@
     },
     ar: {
       tagline:'الفخامة في كل رشفة من التراث', eyebrow:'تراث عثماني أصيل',
-      viewMenu:'عرض القائمة', aboutLabel:'تراثنا', menuLabel:'التشكيلة',
+      viewMenu:'عرض القائمة', backToHome:'الرئيسية',
+      aboutLabel:'تراثنا', menuLabel:'التشكيلة',
       aboutCaption:'بقلاوة عثمانية تُصنع يدوياً يومياً',
       aboutP1:'تركيانا تُحيي تقاليد القهوة التركية العريقة برؤية عصرية. كل فنجان وكل قطعة بقلاوة تُصنع بدقة متناهية في أجواء من الرخام والذهب وضوء الشموع الدافئ.',
       aboutP2:'وجهة لعشاق الأصالة الفاخرة — من قهوتنا المميزة إلى البقلاوة الملفوفة يدويًا، ننقل تراث مقاهي إسطنبول العريقة إلى أرقى زوايا العالم.',
@@ -178,6 +182,9 @@
     heroTagline:      document.getElementById('heroTagline'),
     heroEyebrow:      document.getElementById('heroEyebrow'),
     heroBg:           document.getElementById('heroBg'),
+    landing:          document.getElementById('landing'),
+    menuPage:         document.getElementById('menuPage'),
+    navBackBtn:       document.getElementById('navBackBtn'),
     viewMenuBtn:      document.getElementById('viewMenuBtn'),
     viewMenuLabel:    document.getElementById('viewMenuLabel'),
     tickerTrack:      document.getElementById('tickerTrack'),
@@ -399,10 +406,17 @@
     dom.emptyTitle.textContent     = t.emptyTitle;
     dom.emptySub.textContent       = t.emptySub;
     dom.langToggle.setAttribute('aria-label', t.langLabel);
-    dom.fabLabel.textContent       = t.fabLabel;
     dom.closeModalLabel.textContent= t.closeModal;
     dom.itemCloseLabel.textContent = t.itemCloseLabel;
     dom.footerTagline.textContent  = t.footerTagline;
+    
+    // Update FAB label based on current page
+    if (!dom.menuPage.classList.contains('hidden')) {
+      dom.fabLabel.textContent = t.backToHome;
+    } else {
+      dom.fabLabel.textContent = t.viewMenu;
+    }
+
     updateCardTexts();
     buildCategoryPills();
     buildTicker();
@@ -420,6 +434,27 @@
     dom.themeIcon.innerHTML = isDark
       ? `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`
       : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+  }
+
+  /* ============================================================
+     PAGE SWITCHING
+  ============================================================ */
+  function showMenuPage() {
+    dom.landing.style.display = 'none';
+    dom.menuPage.classList.remove('hidden');
+    document.body.classList.add('menu-page-active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    dom.fabLabel.textContent = I18N[state.lang].backToHome;
+    dom.mainNav.querySelector('.nav-brand').removeAttribute('aria-current');
+  }
+
+  function showLandingPage() {
+    dom.menuPage.classList.add('hidden');
+    dom.landing.style.display = 'block';
+    document.body.classList.remove('menu-page-active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    dom.fabLabel.textContent = I18N[state.lang].viewMenu;
+    dom.mainNav.querySelector('.nav-brand').setAttribute('aria-current', 'page');
   }
 
   /* ============================================================
@@ -660,9 +695,15 @@
       setState({ search: '' });
     });
 
-    const scrollToMenu = () => document.getElementById('menu').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    dom.viewMenuBtn.addEventListener('click', scrollToMenu);
-    dom.mobileFab.addEventListener('click', scrollToMenu);
+    dom.viewMenuBtn.addEventListener('click', showMenuPage);
+    dom.mobileFab.addEventListener('click', () => {
+      if (dom.menuPage.classList.contains('hidden')) {
+        showMenuPage();
+      } else {
+        showLandingPage();
+      }
+    });
+    dom.navBackBtn.addEventListener('click', showLandingPage);
 
     dom.qrBtn.addEventListener('click', () => openQRModal(dom.qrBtn));
     dom.herQrBtn.addEventListener('click', () => openQRModal(dom.herQrBtn));
