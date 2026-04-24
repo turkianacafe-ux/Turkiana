@@ -808,7 +808,90 @@ dialog.item-modal::backdrop {
 .item-meta-row .diet-dot { width: 10px; height: 10px; }
 
 /* ============================================================
-   FOOTER
+   PAGE SWITCHING
+============================================================ */
+#landing,
+#menuPage {
+  transition: opacity 0.4s ease;
+}
+#menuPage.hidden {
+  display: none;
+  opacity: 0;
+}
+#menuPage:not(.hidden) {
+  display: block;
+  opacity: 1;
+}
+
+/* Back button in nav – hidden on landing */
+.nav-back-btn {
+  display: none;
+  margin-inline-end: 0.5rem;
+}
+.menu-page-active .nav-back-btn {
+  display: inline-flex;
+}
+
+/* ============================================================
+   STICKY CATEGORY BAR (bigger, bolder)
+============================================================ */
+.category-bar {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 100;
+  background: var(--c-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--c-border);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+[data-theme="light"] .category-bar {
+  background: var(--c-bg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.category-scroller {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0;
+  scrollbar-width: none;
+  justify-content: center;
+}
+.category-scroller::-webkit-scrollbar { display: none; }
+.cat-pill {
+  flex-shrink: 0;
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--r-full);
+  padding: 0.7rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--c-text-soft);
+  background: transparent;
+  transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast), box-shadow var(--dur-fast);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+.cat-pill:hover {
+  background: var(--c-gold-dim);
+  border-color: var(--c-gold);
+  color: var(--c-gold);
+}
+.cat-pill.active {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: #0C0805;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(196,150,62,0.4);
+}
+.cat-pill:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ============================================================
+   FOOTER CONTACT LINKS
 ============================================================ */
 .footer {
   padding-block: 4rem 3rem;
@@ -835,6 +918,29 @@ dialog.item-modal::backdrop {
 .footer-tagline {
   font-family: var(--f-display); font-style: italic;
   color: var(--c-text-soft); font-size: 1rem; margin-bottom: 1.5rem;
+}
+.footer-contact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--c-text-soft);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+.footer-link:hover {
+  color: var(--c-gold);
+}
+.footer-link svg {
+  flex-shrink: 0;
 }
 .footer-copy { font-size: 0.72rem; color: var(--c-text-soft); opacity: 0.55; letter-spacing: 0.08em; }
 
