@@ -12,7 +12,6 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
   <!-- PWA manifest -->
- 
   <link rel="manifest" href="./manifest.json">
 
   <title>Turkiana · Turkish Café &amp; Desserts</title>
@@ -61,12 +60,20 @@
     <nav class="nav" id="mainNav" aria-label="Main navigation">
       <a href="#" class="nav-brand" aria-current="page" lang="en">TURKI<span>ANA</span></a>
       <div class="nav-actions">
+        <!-- Back to Home (hidden on landing, shown on menu page) -->
+        <button class="icon-btn nav-back-btn" id="navBackBtn" aria-label="Back to home">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+
         <button class="icon-btn" id="langToggle" aria-label="Switch to Arabic" title="Switch language">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
           </svg>
         </button>
+
         <button class="icon-btn" id="themeToggle" aria-label="Switch to light mode" title="Toggle theme">
           <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="5"/>
@@ -76,6 +83,7 @@
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
         </button>
+
         <button class="btn btn-gold" id="qrBtn" style="padding:0.6rem 1.2rem; font-size:0.68rem;">QR Menu</button>
       </div>
     </nav>
@@ -220,20 +228,6 @@
   </div> <!-- /menuPage -->
 
 </main>
-
-  <!-- ====================================================
-       FOOTER
-  ==================================================== -->
-  <footer class="footer" role="contentinfo">
-    <div class="footer-inner">
-      <div class="footer-brand" lang="en">TURKI<span>ANA</span></div>
-      <p class="footer-tagline" id="footerTagline">Luxury in Every Sip of Tradition</p>
-      <div class="ornament" aria-hidden="true" style="max-width:300px;margin:0 auto 1.5rem;">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-      </div>
-      <p class="footer-copy">© Turkiana — Timeless Turkish Indulgence</p>
-    </div>
-  </footer>
 
   <!-- Mobile FAB -->
   <div class="mobile-fab" aria-hidden="true">
