@@ -21,7 +21,6 @@
 
   const BADGE_LABELS = { bestseller:'Best Seller', signature:'Signature', limited:'Limited' };
 
-  // Diet label map for accessible screen-reader text
   const DIET_LABELS = {
     'vegan':          'Vegan',
     'gluten-free':    'Gluten Free',
@@ -102,7 +101,6 @@
     {id:'cro5',  cat:'croissant', en:'Cinnamon Danish',                 ar:'دانش قرفة',                  descEn:'Cinnamon sugar spiral danish, soft and fragrant.',                                          descAr:'دانش قرفة وسكر بشكل حلزوني.', price:20, img:'Cinnamondanish.jfif',        cal:'390 kcal',diet:['vegetarian'],                                    badge:null},
   ];
 
-  // Build a fast id→item lookup map (fixes O(n²) issue #18/#19)
   const ITEM_MAP = Object.fromEntries(MENU_ITEMS.map(item => [item.id, item]));
 
   /* ============================================================
@@ -178,10 +176,6 @@
   /* ============================================================
      SAFE DOM HELPER — never throws, warns once in dev
   ============================================================ */
-  /**
-   * Returns a proxy that silently no-ops any property set or method call
-   * when the real element is null, so a missing element never crashes the app.
-   */
   function safeEl(id) {
     const el = document.getElementById(id);
     if (!el && typeof console !== 'undefined') {
@@ -193,7 +187,6 @@
   function nullProxy() {
     return new Proxy({}, {
       get(_, prop) {
-        // Allow reading so callers don't error on chained access
         if (prop === 'classList') return { toggle:()=>{}, add:()=>{}, remove:()=>{}, contains:()=>false };
         if (prop === 'querySelectorAll') return () => [];
         if (prop === 'querySelector') return () => null;
@@ -206,7 +199,7 @@
         if (prop === 'style') return {};
         return () => {};
       },
-      set() { return true; }, // swallow writes silently
+      set() { return true; },
     });
   }
 
@@ -228,7 +221,6 @@
     viewMenuBtn:      safeEl('viewMenuBtn'),
     viewMenuLabel:    safeEl('viewMenuLabel'),
     tickerTrack:      safeEl('tickerTrack'),
-    // About section elements — may not exist in this HTML build; safeEl handles gracefully
     aboutLabel:       safeEl('aboutLabel'),
     aboutCaption:     safeEl('aboutCaption'),
     aboutP1:          safeEl('aboutP1'),
@@ -279,8 +271,6 @@
     const catLabel = CATEGORIES.find(c => c.key === item.cat);
     const catName = isAr ? catLabel?.ar : catLabel?.en;
     const isFeatured = item.badge === 'bestseller' || item.badge === 'signature';
-
-    // FIX #77: diet dots include aria-label for screen readers
     const dietDots = item.diet.map(d =>
       `<span class="diet-dot" data-diet="${d}" aria-label="${DIET_LABELS[d] || d}"></span>`
     ).join('');
@@ -334,27 +324,26 @@
   }
 
   function buildAllCards() {
+    const grid = document.getElementById('menuGrid');
+    if (!grid) return;
     const frag = document.createDocumentFragment();
     const tmp = document.createElement('div');
     MENU_ITEMS.forEach(item => {
       tmp.innerHTML = buildCardHTML(item);
       frag.appendChild(tmp.firstElementChild);
     });
-
-    const grid = document.getElementById('menuGrid');
-    if (!grid) return;
     grid.innerHTML = '';
     grid.appendChild(frag);
-    // FIX #2: remove is-loading so cards become visible
     grid.classList.remove('is-loading');
     grid.removeAttribute('aria-busy');
+    // Trigger image shimmer tracking after cards are built
+    initImageShimmerObserver();
   }
 
   function buildCategoryPills() {
     const isAr = state.lang === 'ar';
     const scrollerEl = document.getElementById('categoryScroller');
     if (!scrollerEl) return;
-
     const frag = document.createDocumentFragment();
     const tmp = document.createElement('div');
     CATEGORIES.forEach(cat => {
@@ -370,9 +359,8 @@
     const trackEl = document.getElementById('tickerTrack');
     if (!trackEl) return;
     const items = MENU_ITEMS.filter(i => i.badge);
-    const isAr = state.lang === 'ar';
-    // FIX #20: fallback if no badge items
     const source = items.length > 0 ? items : MENU_ITEMS.slice(0, 6);
+    const isAr = state.lang === 'ar';
     const labels = source.map(i => `
       <span class="ticker-item">
         <span class="ticker-dot" aria-hidden="true"></span>
@@ -380,7 +368,7 @@
         <span class="ticker-dot" aria-hidden="true"></span>
         ${i.price} ${CURRENCY}
       </span>`).join('');
-    trackEl.innerHTML = labels + labels; // duplicate for seamless loop
+    trackEl.innerHTML = labels + labels;
   }
 
   function updateCardTexts() {
@@ -388,19 +376,15 @@
     const catMap = Object.fromEntries(CATEGORIES.map(c => [c.key, c]));
     const grid = document.getElementById('menuGrid');
     if (!grid) return;
-
     grid.querySelectorAll('.menu-card').forEach(card => {
-      // FIX #18/#19: use O(1) map lookup instead of find()
       const item = ITEM_MAP[card.dataset.id];
       if (!item) return;
       const newName = isAr ? item.ar : item.en;
       const newDesc = isAr ? (item.descAr || item.descEn) : item.descEn;
-
       const nameEl = card.querySelector('[data-field="name"]');
       const descEl = card.querySelector('[data-field="desc"]');
       const overlayDesc = card.querySelector('.card-overlay-desc');
       const catEl = card.querySelector('.card-category');
-
       if (nameEl) nameEl.textContent = newName;
       if (descEl) descEl.textContent = newDesc;
       if (overlayDesc) overlayDesc.textContent = newDesc;
@@ -410,8 +394,6 @@
         catEl.textContent = isAr ? cd?.ar : cd?.en;
       }
     });
-
-    // Keep brand name LTR regardless of page direction
     const heroTitleEl = document.getElementById('heroTitle');
     const navBrand = document.querySelector('.nav-brand');
     if (isAr) {
@@ -427,13 +409,10 @@
      FILTER
   ============================================================ */
   let filterRafId = null;
-
   function applyFilter() {
-    // Debounce via rAF for smooth experience
     if (filterRafId) cancelAnimationFrame(filterRafId);
     filterRafId = requestAnimationFrame(_doFilter);
   }
-
   function _doFilter() {
     filterRafId = null;
     const term = state.search.toLowerCase().trim();
@@ -441,10 +420,8 @@
     const isAr = state.lang === 'ar';
     const grid = document.getElementById('menuGrid');
     if (!grid) return;
-
     const cards = grid.querySelectorAll('.menu-card');
     let visible = 0;
-
     cards.forEach(card => {
       const item = ITEM_MAP[card.dataset.id];
       if (!item) return;
@@ -455,25 +432,19 @@
       card.dataset.hidden = show ? 'false' : 'true';
       if (show) visible++;
     });
-
     const t = I18N[state.lang];
     const emptyEl = document.getElementById('emptyState');
     if (emptyEl) emptyEl.classList.toggle('visible', visible === 0);
-
     const countText = `${visible} ${visible === 1 ? t.resultSingular : t.resultPlural}`;
     const resultCountEl = document.getElementById('resultCount');
     if (resultCountEl) resultCountEl.textContent = countText;
-
     const searchClearEl = document.getElementById('searchClear');
     if (searchClearEl) searchClearEl.classList.toggle('visible', state.search.length > 0);
-
-    // Debounced live region update so it doesn't fire mid-keystroke
     clearTimeout(applyFilter._liveT);
     applyFilter._liveT = setTimeout(() => {
       const lr = document.getElementById('liveRegion');
       if (lr) lr.textContent = countText;
     }, 600);
-
     grid.classList.remove('is-loading');
   }
   applyFilter._liveT = null;
@@ -485,33 +456,22 @@
     const lang = state.lang;
     const isAr = lang === 'ar';
     const t = I18N[lang];
-
     dom.html.lang = lang;
     dom.html.dir = isAr ? 'rtl' : 'ltr';
-
-    // Hero / landing (always present)
     dom.heroTagline.textContent   = t.tagline;
     dom.heroEyebrow.textContent   = t.eyebrow;
     dom.viewMenuLabel.textContent = t.viewMenu;
     dom.footerTagline.textContent = t.footerTagline;
     dom.langToggle.setAttribute('aria-label', t.langLabel);
-
-    // Menu page labels
     dom.menuLabel.textContent     = t.menuLabel;
-
     const searchInputEl = document.getElementById('searchInput');
     if (searchInputEl) searchInputEl.placeholder = t.searchPlaceholder;
-
     const emptyTitleEl = document.getElementById('emptyTitle');
     if (emptyTitleEl) emptyTitleEl.textContent = t.emptyTitle;
-
     const emptySubEl = document.getElementById('emptySub');
     if (emptySubEl) emptySubEl.textContent = t.emptySub;
-
     dom.closeModalLabel.textContent = t.closeModal;
     dom.itemCloseLabel.textContent  = t.itemCloseLabel;
-
-    // FIX #1: These elements may not exist in the current HTML build — safeEl handles null gracefully
     dom.aboutLabel.textContent   = t.aboutLabel;
     dom.aboutCaption.textContent = t.aboutCaption;
     dom.aboutP1.textContent      = t.aboutP1;
@@ -519,13 +479,10 @@
     dom.statLabel1.textContent   = t.statLabel1;
     dom.statLabel2.textContent   = t.statLabel2;
     dom.statLabel3.textContent   = t.statLabel3;
-
-    // FAB label depends on current page
     const menuPageEl = document.getElementById('menuPage');
     dom.fabLabel.textContent = (menuPageEl && !menuPageEl.classList.contains('hidden'))
       ? t.backToHome
       : t.viewMenu;
-
     updateCardTexts();
     buildCategoryPills();
     buildTicker();
@@ -581,19 +538,15 @@
     if (window.matchMedia('(pointer: coarse)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (window.matchMedia('(prefers-contrast: more)').matches) return;
-
     const cursorEl    = document.getElementById('cursor');
     const cursorRingEl = document.getElementById('cursorRing');
     if (!cursorEl || !cursorRingEl) return;
-
     let mx = 0, my = 0, rx = 0, ry = 0;
-
     document.addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
       cursorEl.style.left = mx + 'px';
       cursorEl.style.top  = my + 'px';
     });
-
     (function animateRing() {
       rx += (mx - rx) * 0.10;
       ry += (my - ry) * 0.10;
@@ -601,9 +554,7 @@
       cursorRingEl.style.top  = ry + 'px';
       requestAnimationFrame(animateRing);
     })();
-
     document.body.classList.add('cursor-ready');
-
     document.addEventListener('mouseover', e => {
       const interactive = e.target.closest('button, a, input, .menu-card, .cat-pill');
       cursorEl.classList.toggle('is-hovering', !!interactive);
@@ -618,8 +569,6 @@
     const titleEl = document.getElementById('heroTitle');
     if (!titleEl) return;
     const word = 'TURKIANA';
-    // FIX #39: add aria-label so screen readers announce the full word,
-    // not individual characters. The visual spans are aria-hidden.
     titleEl.setAttribute('aria-label', word);
     titleEl.innerHTML = word.split('').map((ch, i) =>
       `<span class="char" style="animation-delay:${0.5 + i * 0.08}s" aria-hidden="true">${ch}</span>`
@@ -663,9 +612,7 @@
       }),
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
-
     document.querySelectorAll('.fade-in').forEach(el => revealObs.observe(el));
-
     const grid = document.getElementById('menuGrid');
     if (!grid) return;
     grid.querySelectorAll('.menu-card').forEach((card, i) => {
@@ -682,19 +629,16 @@
     if (!grid) return;
     if (window.matchMedia('(pointer: coarse)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
     grid.addEventListener('mousemove', e => {
       const thumb = e.target.closest('.card-thumb');
       if (!thumb) return;
       const r = thumb.getBoundingClientRect();
       const rx = ((e.clientY - r.top)  / r.height - 0.5) * -8;
       const ry = ((e.clientX - r.left) / r.width  - 0.5) *  8;
-      // FIX #32: add will-change before animating to avoid repaint jank
       thumb.style.willChange = 'transform';
       thumb.style.transform  = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
       thumb.style.transition = 'transform 0.08s ease';
     });
-
     grid.addEventListener('mouseleave', () => {
       grid.querySelectorAll('.card-thumb').forEach(t => {
         t.style.transform  = '';
@@ -702,7 +646,6 @@
         t.style.willChange = '';
       });
     }, true);
-
     grid.addEventListener('mouseover', e => {
       const entering = e.target.closest('.card-thumb');
       const leaving  = e.relatedTarget?.closest('.card-thumb');
@@ -715,19 +658,45 @@
   }
 
   /* ============================================================
-     IMAGE ERROR HANDLER
+     IMAGE ERROR HANDLER + SHIMMER OBSERVER
   ============================================================ */
-  function initImageErrorHandler() {
-    const grid = document.getElementById('menuGrid');
-    if (grid) {
-      grid.addEventListener('error', e => {
-        const img = e.target;
-        if (img.tagName === 'IMG' && img.closest('.card-thumb')) {
-          img.closest('.card-thumb').classList.add('image-error');
-        }
-      }, true);
+  function handleImage(img) {
+    const thumb = img.closest('.card-thumb');
+    if (img.complete) {
+      if (img.naturalWidth) {
+        img.classList.add('is-loaded');
+      } else {
+        if (thumb) thumb.classList.add('error');
+      }
     }
+    img.addEventListener('load', () => {
+      img.classList.add('is-loaded');
+    });
+    img.addEventListener('error', () => {
+      if (thumb) thumb.classList.add('error');
+    });
+  }
 
+  function initImageShimmerObserver() {
+    const grid = document.getElementById('menuGrid');
+    if (!grid) return;
+    grid.querySelectorAll('img').forEach(handleImage);
+    // Set up MutationObserver for dynamically added cards
+    if (!grid._shimmerObserver) {
+      grid._shimmerObserver = new MutationObserver(mutations => {
+        mutations.forEach(m => m.addedNodes.forEach(node => {
+          if (node.nodeType === 1) {
+            if (node.tagName === 'IMG') handleImage(node);
+            else node.querySelectorAll?.('img').forEach(handleImage);
+          }
+        }));
+      });
+      grid._shimmerObserver.observe(grid, { childList: true, subtree: true });
+    }
+  }
+
+  function initImageErrorHandler() {
+    // Already covered by handleImage, but keep for modal images
     const itemModalEl = document.getElementById('itemModal');
     if (itemModalEl) {
       itemModalEl.addEventListener('error', e => {
@@ -744,7 +713,6 @@
      MODAL — QR
   ============================================================ */
   let _qrOpener = null;
-
   function openQRModal(opener) {
     const modal = document.getElementById('qrModal');
     if (!modal) return;
@@ -754,7 +722,6 @@
     const closeBtn = document.getElementById('closeModal');
     if (closeBtn) closeBtn.focus();
   }
-
   function closeQRModal() {
     const modal = document.getElementById('qrModal');
     if (!modal) return;
@@ -766,34 +733,26 @@
   /* ============================================================
      MODAL — ITEM DETAIL
   ============================================================ */
-  // FIX #44: track opener so focus can return when modal closes
   let _itemOpener = null;
-
   function openItemModal(itemId, openerEl) {
     const item = ITEM_MAP[itemId];
     if (!item) return;
-
     const modal = document.getElementById('itemModal');
     if (!modal) return;
-
     _itemOpener = openerEl || null;
-
     const isAr    = state.lang === 'ar';
     const name    = isAr ? item.ar : item.en;
     const desc    = isAr ? (item.descAr || item.descEn) : item.descEn;
     const imgSrc  = IMG_BASE + item.img;
-
     const imgWrapper = document.getElementById('itemImgWrapper');
     if (imgWrapper) {
       imgWrapper.innerHTML = `<img src="${imgSrc}" alt="${name}" style="max-width:100%; max-height:70vh; object-fit:contain;">`;
     }
-
     const titleEl = document.getElementById('itemModalTitle');
     const priceEl = document.getElementById('itemModalPrice');
     const descEl  = document.getElementById('itemModalDesc');
     const calEl   = document.getElementById('itemModalCal');
     const dietEl  = document.getElementById('itemModalDiet');
-
     if (titleEl) titleEl.textContent = name;
     if (priceEl) priceEl.textContent = `${item.price} ${CURRENCY}`;
     if (descEl)  descEl.textContent  = desc;
@@ -801,17 +760,14 @@
     if (dietEl)  dietEl.innerHTML    = item.diet.map(d =>
       `<span class="diet-dot" data-diet="${d}" aria-label="${DIET_LABELS[d] || d}"></span>`
     ).join('');
-
     modal.showModal();
     document.body.style.overflow = 'hidden';
   }
-
   function closeItemModal() {
     const modal = document.getElementById('itemModal');
     if (!modal) return;
     modal.close();
     document.body.style.overflow = '';
-    // FIX #44: return focus to the card that triggered the modal
     if (_itemOpener) { _itemOpener.focus(); _itemOpener = null; }
   }
 
@@ -843,6 +799,141 @@
   }
 
   /* ============================================================
+     SYSTEM DARK-MODE SYNC (Issue #22)
+  ============================================================ */
+  function initSystemThemeSync() {
+    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    mql.addEventListener('change', e => {
+      if (localStorage.getItem('tk-dark') !== null) return; // manual override
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    });
+  }
+
+  /* ============================================================
+     SERVICE WORKER UPDATE TOAST
+  ============================================================ */
+  function showUpdateToast(worker) {
+    if (document.getElementById('tk-update-toast')) return;
+    const toast = document.createElement('div');
+    toast.id = 'tk-update-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.innerHTML = `
+      <span>A new version of Turkiana is ready.</span>
+      <button id="tk-toast-refresh" aria-label="Refresh to update">Refresh</button>
+      <button id="tk-toast-dismiss" aria-label="Dismiss update notification">✕</button>
+    `;
+    Object.assign(toast.style, {
+      position: 'fixed', bottom: 'calc(max(4.5rem, env(safe-area-inset-bottom)) + 1rem)',
+      left: '50%', transform: 'translateX(-50%)',
+      background: 'var(--c-surface, #1C1109)', color: 'var(--c-text, #F0E6D0)',
+      border: '1px solid var(--c-border-strong, rgba(196,150,62,0.28))',
+      borderRadius: '999px', padding: '0.65rem 1.25rem',
+      display: 'flex', alignItems: 'center', gap: '0.75rem',
+      fontSize: '0.8rem', boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
+      zIndex: '9999', fontFamily: 'DM Sans, sans-serif', whiteSpace: 'nowrap',
+      animation: 'toastIn 0.35s cubic-bezier(0.22,1,0.36,1) both',
+    });
+    if (!document.getElementById('tk-toast-style')) {
+      const style = document.createElement('style');
+      style.id = 'tk-toast-style';
+      style.textContent = `@keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(12px); } to { opacity:1; transform:translateX(-50%) translateY(0); } } #tk-update-toast button { background: var(--c-gold, #C4963E); color: #0C0805; border: none; border-radius: 999px; padding: 0.3rem 0.9rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; cursor: pointer; font-family: inherit; } #tk-toast-dismiss { background: transparent !important; color: var(--c-text-soft, #B8A888) !important; padding: 0.3rem 0.5rem !important; }`;
+      document.head.appendChild(style);
+    }
+    document.body.appendChild(toast);
+    document.getElementById('tk-toast-refresh').addEventListener('click', () => {
+      worker.postMessage('skipWaiting');
+      window.location.reload();
+    });
+    document.getElementById('tk-toast-dismiss').addEventListener('click', () => toast.remove());
+    setTimeout(() => toast.remove(), 18_000);
+  }
+
+  function initSWUpdateToast() {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.ready.then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const worker = reg.installing;
+        if (!worker) return;
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateToast(worker);
+          }
+        });
+      });
+    });
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg && reg.waiting) showUpdateToast(reg.waiting);
+    });
+  }
+
+  /* ============================================================
+     DEEP-LINK: ?item=<id>
+  ============================================================ */
+  function initDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const itemId = params.get('item');
+    if (!itemId) return;
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const menuPage = document.getElementById('menuPage');
+        const landing  = document.getElementById('landing');
+        if (menuPage && menuPage.classList.contains('hidden')) {
+          if (landing) landing.style.display = 'none';
+          menuPage.classList.remove('hidden');
+          document.body.classList.add('menu-page-active');
+        }
+        const card = document.querySelector(`.menu-card[data-id="${CSS.escape(itemId)}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => card.click(), 400);
+        }
+      }, 200);
+    });
+  }
+
+  /* ============================================================
+     SHARE API BUTTON
+  ============================================================ */
+  function injectShareButton() {
+    if (!navigator.share) return;
+    const itemModal = document.getElementById('itemModal');
+    if (!itemModal) return;
+    const detailsEl = itemModal.querySelector('.item-details');
+    if (!detailsEl || detailsEl.querySelector('.tk-share-btn')) return;
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'btn btn-ghost tk-share-btn';
+    shareBtn.style.cssText = 'align-self:flex-start; font-size:0.72rem; padding:0.6rem 1.5rem;';
+    shareBtn.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg> Share
+    `;
+    shareBtn.addEventListener('click', async () => {
+      const title = document.getElementById('itemModalTitle')?.textContent;
+      const price = document.getElementById('itemModalPrice')?.textContent;
+      const desc  = document.getElementById('itemModalDesc')?.textContent;
+      try {
+        await navigator.share({ title: `${title} — Turkiana`, text: `${title} | ${price}\n${desc}`, url: window.location.href });
+      } catch (err) { if (err.name !== 'AbortError') console.warn('[Turkiana] Share failed:', err); }
+    });
+    const closeBtn = itemModal.querySelector('#itemCloseModal');
+    if (closeBtn) detailsEl.insertBefore(shareBtn, closeBtn);
+    else detailsEl.appendChild(shareBtn);
+  }
+
+  function initShareButton() {
+    const itemModal = document.getElementById('itemModal');
+    if (!itemModal) return;
+    if (itemModal.open) injectShareButton();
+    const observer = new MutationObserver(() => {
+      if (itemModal.open || itemModal.hasAttribute('open')) injectShareButton();
+    });
+    observer.observe(itemModal, { attributes: true, attributeFilter: ['open'] });
+  }
+
+  /* ============================================================
      EVENTS
   ============================================================ */
   function debounce(fn, delay) {
@@ -851,13 +942,11 @@
   }
 
   function bindEvents() {
-    // Language / theme toggles
     const langToggleEl  = document.getElementById('langToggle');
     const themeToggleEl = document.getElementById('themeToggle');
     if (langToggleEl)  langToggleEl.addEventListener('click',  () => setState({ lang: state.lang === 'en' ? 'ar' : 'en' }));
     if (themeToggleEl) themeToggleEl.addEventListener('click', () => setState({ dark: !state.dark }));
 
-    // Category pills (delegated)
     const scrollerEl = document.getElementById('categoryScroller');
     if (scrollerEl) {
       scrollerEl.addEventListener('click', e => {
@@ -871,7 +960,6 @@
       });
     }
 
-    // Search
     const searchInputEl = document.getElementById('searchInput');
     const searchClearEl = document.getElementById('searchClear');
     if (searchInputEl) {
@@ -884,7 +972,6 @@
       });
     }
 
-    // Page switches
     const viewMenuBtnEl = document.getElementById('viewMenuBtn');
     const navBackBtnEl  = document.getElementById('navBackBtn');
     const mobileFabEl   = document.getElementById('mobileFab');
@@ -897,13 +984,9 @@
         else showMenuPage();
       });
     }
-
-    // FIX #45: mobileFab wrapper div should not be aria-hidden — remove it via JS
-    // (The HTML has aria-hidden="true" on .mobile-fab; we correct it at runtime)
     const mobileFabWrapper = document.querySelector('.mobile-fab');
     if (mobileFabWrapper) mobileFabWrapper.removeAttribute('aria-hidden');
 
-    // QR modal
     const qrBtnEl    = document.getElementById('qrBtn');
     const herQrBtnEl = document.getElementById('herQrBtn');
     const closeMEl   = document.getElementById('closeModal');
@@ -919,7 +1002,6 @@
       });
     }
 
-    // Item modal
     const itemCloseEl  = document.getElementById('itemCloseModal');
     const itemModalEl  = document.getElementById('itemModal');
     if (itemCloseEl) itemCloseEl.addEventListener('click', closeItemModal);
@@ -931,8 +1013,6 @@
       });
     }
 
-    // Menu grid — open modal on click OR keyboard (Enter/Space)
-    // FIX #43: cards now have tabindex="0" (set in buildCardHTML), so keyboard users can reach them
     const grid = document.getElementById('menuGrid');
     if (grid) {
       grid.addEventListener('click', e => {
@@ -940,12 +1020,11 @@
         if (!card) return;
         openItemModal(card.dataset.id, card);
       });
-
       grid.addEventListener('keydown', e => {
         if (e.key !== 'Enter' && e.key !== ' ') return;
         const card = e.target.closest('.menu-card');
         if (!card) return;
-        e.preventDefault(); // prevent page scroll on Space
+        e.preventDefault();
         openItemModal(card.dataset.id, card);
       });
     }
@@ -958,7 +1037,7 @@
     try {
       applyTheme();
       initHeroTitle();
-      buildAllCards();
+      buildAllCards();          // now includes shimmer observer setup
       buildCategoryPills();
       buildTicker();
       applyLanguage();
@@ -970,8 +1049,11 @@
       initImageErrorHandler();
       initHero();
       registerServiceWorker();
+      initSystemThemeSync();
+      initSWUpdateToast();
+      initDeepLink();
+      initShareButton();
     } catch (err) {
-      // Last-resort catch: log and let the app degrade gracefully
       console.error('[Turkiana] Init error:', err);
     }
   }
