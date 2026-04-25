@@ -1,166 +1,177 @@
-/* ================================================================
-   Turkiana Service Worker — v1.0.0
-   Strategy:
-   • Core assets  → Cache-First (CSS, JS, HTML, icons)
-   • Google Fonts → StaleWhileRevalidate (Font CSS + files)
-   • Menu images  → Cache-First with network fallback
-   • Navigation   → NetworkFirst with offline fallback
-================================================================ */
+/* ============================================================
+   TURKIANA — service-worker.js (v1.0.1)
+   Offline support, cache-first for shell, network-first for
+   images with fallback. Fixes #54, #73 from audit.
+============================================================ */
+'use strict';
 
-const CACHE_VER   = 'v1';
-const CORE_CACHE  = `turkiana-core-${CACHE_VER}`;
-const FONT_CACHE  = `turkiana-fonts-${CACHE_VER}`;
-const IMG_CACHE   = `turkiana-images-${CACHE_VER}`;
+const CACHE_VERSION = 'turkiana-v1';
 
-const ALL_CACHES = [CORE_CACHE, FONT_CACHE, IMG_CACHE];
-
-const CORE_ASSETS = [
+const SHELL_ASSETS = [
   './',
   './index.html',
   './style.css',
+  './style-enhancements.css',
   './app.js',
+  './app-enhancements.js',
   './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/apple-touch-icon.png',
 ];
 
-/* ── Install ─────────────────────────────────────────────────── */
-self.addEventListener('install', event => {
+const CACHE_ORIGINS = [
+  'https://fonts.googleapis.com',
+  'https://fonts.gstatic.com',
+  'https://turkianacafe-ux.github.io',
+  'https://api.qrserver.com',
+];
+
+// ─── Install ────────────────────────────────────────────────
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CORE_CACHE)
-      .then(cache => cache.addAll(CORE_ASSETS))
+    caches.open(CACHE_VERSION)
+      .then((cache) => cache.addAll(SHELL_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
 
-/* ── Activate ────────────────────────────────────────────────── */
-self.addEventListener('activate', event => {
+// ─── Activate ───────────────────────────────────────────────
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys
-          .filter(k => !ALL_CACHES.includes(k))
-          .map(k => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) => Promise.all(
+      keys.filter((key) => key !== CACHE_VERSION)
+        .map((key) => {
+          console.log('[SW] Deleting old cache:', key);
+          return caches.delete(key);
+        })
+    ))
+    .then(() => self.clients.claim())
   );
 });
 
-/* ── Fetch ───────────────────────────────────────────────────── */
-self.addEventListener('fetch', event => {
+// ─── Fetch ──────────────────────────────────────────────────
+self.addEventListener('fetch', (event) => {
   const { request } = event;
-  if (!request.url.startsWith('http')) return;
-
   const url = new URL(request.url);
 
-  // Google Fonts CSS → Stale-While-Revalidate
-  if (url.hostname === 'fonts.googleapis.com') {
-    event.respondWith(staleWhileRevalidate(request, FONT_CACHE));
+  if (request.method !== 'GET') return;
+  if (!['http:', 'https:'].includes(url.protocol)) return;
+
+  // Strategy 1: Cache-first for same-origin (shell + JS/CSS)
+  if (url.origin === self.location.origin) {
+    event.respondWith(cacheFirst(request));
     return;
   }
 
-  // Google Fonts files → Cache-First
-  if (url.hostname === 'fonts.gstatic.com') {
-    event.respondWith(cacheFirst(request, FONT_CACHE));
+  // Strategy 2: Cache-first for fonts
+  if (url.origin === 'https://fonts.gstatic.com' ||
+      url.origin === 'https://fonts.googleapis.com') {
+    event.respondWith(cacheFirst(request));
     return;
   }
 
-  // Menu images from CDN → Cache-First
-  if (url.hostname === 'turkianacafe-ux.github.io') {
-    event.respondWith(cacheFirst(request, IMG_CACHE));
+  // Strategy 3: Network-first for menu images (stale-while-revalidate)
+  if (url.origin === 'https://turkianacafe-ux.github.io') {
+    event.respondWith(networkFirstWithFallback(request));
     return;
   }
 
-  // QR code API → Network-Only (skip cache)
-  if (url.hostname === 'api.qrserver.com') {
-    event.respondWith(fetch(request).catch(() =>
-      new Response('', { status: 503 })
-    ));
+  // Strategy 4: Network-first for other allowed origins (e.g., QR API)
+  if (CACHE_ORIGINS.some((o) => url.origin === o)) {
+    event.respondWith(networkFirst(request));
     return;
   }
 
-  // Navigation requests → Network-First with offline fallback
-  if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request, CORE_CACHE));
-    return;
-  }
-
-  // Static assets (JS/CSS/images) → Cache-First
-  if (['script', 'style', 'image', 'font'].includes(request.destination)) {
-    event.respondWith(cacheFirst(request, CORE_CACHE));
-    return;
-  }
+  // Default: pass through
 });
 
-/* ── Strategies ──────────────────────────────────────────────── */
+// ─── Strategy helpers ───────────────────────────────────────
 
-async function cacheFirst(request, cacheName) {
+async function cacheFirst(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
   try {
     const response = await fetch(request);
-    if (response && response.status === 200) {
-      const cache = await caches.open(cacheName);
+    if (response.ok) {
+      const cache = await caches.open(CACHE_VERSION);
       cache.put(request, response.clone());
     }
     return response;
   } catch {
-    return new Response('', { status: 503, statusText: 'Offline' });
+    return offlineFallback(request);
   }
 }
 
-async function networkFirst(request, cacheName) {
+async function networkFirst(request) {
   try {
     const response = await fetch(request);
-    if (response && response.status === 200) {
-      const cache = await caches.open(cacheName);
+    if (response.ok) {
+      const cache = await caches.open(CACHE_VERSION);
       cache.put(request, response.clone());
     }
     return response;
   } catch {
     const cached = await caches.match(request);
-    if (cached) return cached;
-    return caches.match('./index.html').then(r =>
-      r || new Response(offlinePage(), {
-        status: 200,
-        headers: { 'Content-Type': 'text/html; charset=utf-8' }
-      })
-    );
+    return cached || offlineFallback(request);
   }
 }
 
-async function staleWhileRevalidate(request, cacheName) {
-  const cache = await caches.open(cacheName);
-  const cached = await cache.match(request);
-  const fetchPromise = fetch(request).then(response => {
-    if (response && response.status === 200) {
-      cache.put(request, response.clone());
-    }
-    return response;
-  }).catch(() => null);
-  return cached || await fetchPromise;
+async function networkFirstWithFallback(request) {
+  const cached = await caches.match(request);
+  const fetchPromise = fetch(request)
+    .then(async (response) => {
+      if (response.ok) {
+        const cache = await caches.open(CACHE_VERSION);
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) {
+    // Return cached immediately, refresh in background
+    fetchPromise; // fire-and-forget
+    return cached;
+  }
+
+  const response = await fetchPromise;
+  return response || imageFallback();
 }
 
-function offlinePage() {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Turkiana — Offline</title>
-<style>
-  body { margin:0; min-height:100dvh; display:flex; align-items:center; justify-content:center;
-         flex-direction:column; gap:1rem; font-family:Georgia,serif;
-         background:#060402; color:#F0E6D0; text-align:center; padding:2rem; }
-  h1 { color:#C4963E; font-size:2rem; letter-spacing:.2em; text-transform:uppercase; }
-  p  { color:#B8A888; max-width:28ch; line-height:1.7; }
-  a  { color:#C4963E; }
-</style>
-</head>
-<body>
-  <h1>Turkiana</h1>
-  <p>You appear to be offline. Please check your connection and&nbsp;<a href="./">try again</a>.</p>
-</body>
-</html>`;
+async function offlineFallback(request) {
+  if (request.destination === 'document') {
+    const cached = await caches.match('./index.html');
+    return cached || new Response(
+      '<h1 style="font-family:sans-serif;text-align:center;padding:4rem">Offline — please reconnect</h1>',
+      { headers: { 'Content-Type': 'text/html' } }
+    );
+  }
+  if (request.destination === 'image') {
+    return imageFallback();
+  }
+  return new Response('', { status: 503, statusText: 'Service Unavailable' });
 }
+
+function imageFallback() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <rect width="400" height="300" fill="#1C1109"/>
+    <g transform="translate(200,150)" opacity="0.3" stroke="#C4963E" stroke-width="1.5" fill="none">
+      <rect x="-40" y="-30" width="80" height="60" rx="6"/>
+      <circle cx="-12" cy="-8" r="8"/>
+      <polyline points="40,-30 10,10 -20,-10 -40,30"/>
+    </g>
+    <text x="200" y="230" text-anchor="middle" font-family="sans-serif"
+          font-size="11" fill="#B8A888" opacity="0.6">Image unavailable offline</text>
+  </svg>`;
+  return new Response(svg, {
+    headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'no-store' },
+  });
+}
+
+// ─── Message handler ─────────────────────────────────────────
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
+  if (event.data === 'clearCache') {
+    caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
+  }
+});
