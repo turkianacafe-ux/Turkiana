@@ -4,11 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts — a modern tribute to Istanbul's grand café culture.">
-  <meta name="theme-color" content="#C4963E">
+  <meta name="theme-color" content="#C4963E" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#9E7420" media="(prefers-color-scheme: light)">
 
-  <!-- iOS standalone meta tags -->
+  <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Turkiana">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
   <!-- PWA manifest -->
@@ -16,67 +18,79 @@
 
   <title>Turkiana · Turkish Café &amp; Desserts</title>
 
-  <!-- Eliminate theme flash -->
+  <!-- Theme flash prevention — must run before paint -->
   <script>
-    (function(){
-      var d = localStorage.getItem('tk-dark');
-      if (d === 'false' || (!d && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
+    (function () {
+      var stored = localStorage.getItem('tk-dark');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var isDark = stored !== null ? stored === 'true' : prefersDark;
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      var lang = localStorage.getItem('tk-lang') || 'en';
+      document.documentElement.lang = lang;
+      if (lang === 'ar') document.documentElement.dir = 'rtl';
     })();
   </script>
 
-  <!-- Preconnect for Google Fonts and QR API -->
+  <!-- Fonts — Cormorant Garamond (display) + DM Sans (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://api.qrserver.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 
-  <!-- Main stylesheet + enhancements -->
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="style-enhancements.css">
 </head>
 <body>
-  <!-- Skip link -->
+
+  <!-- Accessibility: skip link -->
   <a href="#menu" class="skip-link">Skip to menu</a>
 
-  <!-- ARIA live region -->
+  <!-- ARIA live region for dynamic announcements -->
   <div id="liveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Custom cursor -->
+  <!-- Custom cursor — desktop only, hidden via CSS on touch -->
   <div class="cursor" id="cursor" aria-hidden="true"></div>
   <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
-  <!-- Ambient background orbs -->
+  <!-- Ambient atmosphere orbs -->
   <div class="ambient-bg" aria-hidden="true">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
   </div>
 
-  <!-- ====================================================
-       NAVIGATION
-  ==================================================== -->
-  <header role="banner">
+  <!-- ═══════════════════════════════════════════════════════════
+       HEADER / NAVIGATION
+  ════════════════════════════════════════════════════════════ -->
+  <header id="siteHeader" role="banner">
     <nav class="nav" id="mainNav" aria-label="Main navigation">
-      <a href="#" class="nav-brand" aria-current="page" lang="en">TURKI<span>ANA</span></a>
+
+      <!-- Brand -->
+      <a href="#" class="nav-brand" id="navBrand" aria-current="page" lang="en">
+        TURKI<span>ANA</span>
+      </a>
+
+      <!-- Actions cluster -->
       <div class="nav-actions">
-        <!-- Back to Home (hidden on landing, shown on menu page) -->
+
+        <!-- Back to home (visible only on menu page) -->
         <button class="icon-btn nav-back-btn" id="navBackBtn" aria-label="Back to home">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M15 18l-6-6 6-6"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
         </button>
 
-        <button class="icon-btn" id="langToggle" aria-label="Switch to Arabic" title="Switch language">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+        <!-- Language toggle -->
+        <button class="icon-btn" id="langToggle" aria-label="Switch to Arabic">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
           </svg>
         </button>
 
-        <button class="icon-btn" id="themeToggle" aria-label="Switch to light mode" title="Toggle theme">
-          <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Theme toggle -->
+        <button class="icon-btn" id="themeToggle" aria-label="Switch to light mode">
+          <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="5"/>
             <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
             <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
@@ -85,130 +99,262 @@
           </svg>
         </button>
 
-        <button class="btn btn-gold" id="qrBtn" style="padding:0.6rem 1.2rem; font-size:0.68rem;">QR Menu</button>
+        <!-- QR code button -->
+        <button class="btn btn-outline-gold" id="qrBtn">QR Menu</button>
       </div>
     </nav>
   </header>
 
-<main id="main-content">
+  <!-- ═══════════════════════════════════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════════════════════════════════════ -->
+  <main id="main-content">
 
-  <!-- ========== LANDING PAGE (full screen) ========== -->
-  <div id="landing">
-    <section class="hero" aria-label="Welcome to Turkiana">
-      <div class="hero-pattern" aria-hidden="true"></div>
-      <div class="hero-bg" id="heroBg" role="img" aria-label="Luxury Turkish coffee and baklava"></div>
-      <div class="hero-overlay" aria-hidden="true"></div>
-      <div class="hero-content">
-        <p class="hero-eyebrow" id="heroEyebrow">Est. Ottoman Heritage</p>
-        <h1 class="hero-title" id="heroTitle">TURKIANA</h1>
-        <p class="hero-tagline" id="heroTagline">Luxury in Every Sip of Tradition</p>
-        <div class="hero-actions">
-          <button class="btn btn-gold" id="viewMenuBtn">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
-            </svg>
-            <span id="viewMenuLabel">View Menu</span>
-          </button>
-          <button class="btn btn-ghost" id="herQrBtn">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/>
-              <path d="M14 14h.01M14 17h3M17 14v3M20 17v.01M20 14v.01"/>
-            </svg>
-            QR Code
-          </button>
-        </div>
-      </div>
-    </section>
+    <!-- ──────────────── LANDING PAGE ──────────────── -->
+    <div id="landing">
 
-    <div class="ticker" aria-hidden="true" id="tickerEl">
-      <div class="ticker-track" id="tickerTrack"></div>
-    </div>
-  </div> <!-- /landing -->
+      <section class="hero" aria-label="Welcome to Turkiana">
+        <div class="hero-pattern" aria-hidden="true"></div>
+        <div class="hero-bg" id="heroBg" role="img" aria-label="Luxury Turkish coffee and baklava"></div>
+        <div class="hero-overlay" aria-hidden="true"></div>
 
-  <!-- ========== MENU PAGE (hidden until "View Menu") ========== -->
-  <div id="menuPage" class="hidden">
+        <div class="hero-content">
+          <p class="hero-eyebrow" id="heroEyebrow">
+            <span class="eyebrow-line" aria-hidden="true"></span>
+            Est. Ottoman Heritage
+            <span class="eyebrow-line" aria-hidden="true"></span>
+          </p>
 
-    <section id="menu" class="menu-section" aria-labelledby="menu-heading">
-      <div class="container">
-        <div class="menu-header fade-in">
-          <p class="section-label" id="menuLabel">Selections</p>
-          <h2 class="section-title" id="menu-heading">Our <em>Menu</em></h2>
-        </div>
+          <!-- Title split into chars by JS for staggered reveal -->
+          <h1 class="hero-title" id="heroTitle" aria-label="TURKIANA">TURKIANA</h1>
 
-        <div class="category-bar" id="categoryBar">
-          <div class="category-scroller" role="group" aria-label="Filter by category" aria-controls="menuGrid" id="categoryScroller"></div>
-        </div>
+          <p class="hero-tagline" id="heroTagline">Luxury in Every Sip of Tradition</p>
 
-        <div class="filter-toolbar" role="search">
-          <div class="search-field">
-            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="search" id="searchInput" placeholder="Search flavours…" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search menu items" aria-controls="menuGrid">
-            <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+          <div class="hero-actions">
+            <button class="btn btn-gold btn-lg" id="viewMenuBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-3 7h3m-3 4h3m-7-4h.01m-.01 4h.01"/>
+              </svg>
+              <span id="viewMenuLabel">View Menu</span>
+            </button>
+
+            <button class="btn btn-ghost btn-lg" id="herQrBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <path d="M14 14h.01M14 17h3M17 14v3M20 17v.01M20 14v.01"/>
+              </svg>
+              QR Code
+            </button>
           </div>
-          <div class="search-divider" aria-hidden="true"></div>
-          <span class="result-count" id="resultCount" role="status" aria-live="polite"></span>
+
+          <!-- Proof bar -->
+          <div class="hero-proof" aria-hidden="true">
+            <div class="proof-item">
+              <strong class="proof-num">60+</strong>
+              <span class="proof-label">Menu Items</span>
+            </div>
+            <div class="proof-divider"></div>
+            <div class="proof-item">
+              <strong class="proof-num">8</strong>
+              <span class="proof-label">Categories</span>
+            </div>
+            <div class="proof-divider"></div>
+            <div class="proof-item">
+              <strong class="proof-num">Ottoman</strong>
+              <span class="proof-label">Heritage</span>
+            </div>
+          </div>
         </div>
 
-        <div class="menu-grid is-loading" id="menuGrid" aria-label="Menu items" aria-busy="true"></div>
-
-        <div class="empty-state" id="emptyState" role="status" aria-live="polite">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            <line x1="8" y1="11" x2="14" y2="11"/>
-          </svg>
-          <p class="empty-state-title" id="emptyTitle">Nothing found</p>
-          <p id="emptySub">Try a different search or browse all categories.</p>
+        <!-- Animated scroll indicator -->
+        <div class="scroll-indicator" aria-hidden="true">
+          <div class="scroll-indicator-line"></div>
         </div>
+      </section>
+
+      <!-- Featured item marquee -->
+      <div class="ticker" aria-hidden="true" id="tickerEl">
+        <div class="ticker-track" id="tickerTrack"></div>
       </div>
-    </section>
+    </div>
+    <!-- /landing -->
 
-    <footer class="footer" role="contentinfo">
-      <div class="footer-inner">
-        <div class="footer-brand" lang="en">TURKI<span>ANA</span></div>
-        <p class="footer-tagline" id="footerTagline">Luxury in Every Sip of Tradition</p>
-        <div class="footer-contact">
-          <a href="https://instagram.com/turkiana.qa" target="_blank" rel="noopener noreferrer" class="footer-link">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" role="img"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
-            @turkiana.qa
-          </a>
-          <a href="tel:+97451866671" class="footer-link">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" role="img"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            +974 5186 6671
-          </a>
+    <!-- ──────────────── MENU PAGE ──────────────── -->
+    <div id="menuPage" class="hidden">
+
+      <!-- Spotlight / Featured section -->
+      <section class="spotlight" id="spotlightSection" aria-labelledby="spotlight-heading">
+        <div class="container">
+          <header class="section-header fade-in">
+            <p class="section-label" id="spotlightLabel">Today's Picks</p>
+            <h2 class="section-title" id="spotlight-heading">Chef's <em>Recommendations</em></h2>
+          </header>
+          <div class="spotlight-grid" id="spotlightGrid" role="list" aria-label="Featured items"></div>
         </div>
-        <div class="ornament" aria-hidden="true" style="max-width:300px;margin:1.5rem auto;">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      </section>
+
+      <!-- Full menu -->
+      <section id="menu" class="menu-section" aria-labelledby="menu-heading">
+        <div class="container">
+
+          <header class="menu-header fade-in">
+            <div class="menu-header-row">
+              <div>
+                <p class="section-label" id="menuLabel">Selections</p>
+                <h2 class="section-title" id="menu-heading">Our <em>Menu</em></h2>
+              </div>
+              <!-- View toggle: grid / list -->
+              <div class="view-toggle" role="group" aria-label="Choose layout">
+                <button class="view-btn active" id="viewGrid" aria-pressed="true" aria-label="Grid view" title="Grid view">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="3" y="3" width="8" height="8" rx="1.5"/>
+                    <rect x="13" y="3" width="8" height="8" rx="1.5"/>
+                    <rect x="3" y="13" width="8" height="8" rx="1.5"/>
+                    <rect x="13" y="13" width="8" height="8" rx="1.5"/>
+                  </svg>
+                </button>
+                <button class="view-btn" id="viewList" aria-pressed="false" aria-label="List view" title="List view">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                    <circle cx="3.5" cy="6" r="1.5" fill="currentColor" stroke="none"/>
+                    <circle cx="3.5" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+                    <circle cx="3.5" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <!-- Sticky category bar -->
+          <div class="category-bar" id="categoryBar" role="navigation" aria-label="Menu categories">
+            <div class="category-scroller" id="categoryScroller" role="group" aria-label="Filter by category" aria-controls="menuGrid"></div>
+          </div>
+
+          <!-- Search & filter toolbar -->
+          <div class="filter-toolbar" role="search" aria-label="Search and filter menu">
+            <label class="search-field" for="searchInput">
+              <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+              <input
+                type="search"
+                id="searchInput"
+                placeholder="Search flavours…"
+                autocomplete="off"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="search"
+                enterkeyhint="search"
+                aria-label="Search menu items"
+                aria-controls="menuGrid"
+                aria-describedby="resultCount"
+              >
+              <button class="search-clear" id="searchClear" aria-label="Clear search" hidden>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </label>
+
+            <div class="toolbar-divider" aria-hidden="true"></div>
+
+            <!-- Dietary quick-filter chips -->
+            <div class="diet-chips" id="dietChips" role="group" aria-label="Dietary filter">
+              <button class="diet-chip" data-diet="vegan" aria-pressed="false">
+                <span class="diet-pip" data-diet="vegan" aria-hidden="true"></span>
+                Vegan
+              </button>
+              <button class="diet-chip" data-diet="gluten-free" aria-pressed="false">
+                <span class="diet-pip" data-diet="gluten-free" aria-hidden="true"></span>
+                GF
+              </button>
+            </div>
+
+            <div class="toolbar-divider" aria-hidden="true"></div>
+            <span class="result-count" id="resultCount" role="status" aria-live="polite" aria-atomic="true"></span>
+          </div>
+
+          <!-- Menu grid — data-view set by JS ("grid" | "list") -->
+          <div
+            class="menu-grid is-loading"
+            id="menuGrid"
+            role="list"
+            aria-label="Menu items"
+            aria-busy="true"
+            data-view="grid"
+          ></div>
+
+          <!-- Empty state -->
+          <div class="empty-state" id="emptyState" role="status" aria-live="polite" aria-atomic="true" hidden>
+            <svg class="empty-icon" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+            <p class="empty-title" id="emptyTitle">Nothing found</p>
+            <p class="empty-sub" id="emptySub">Try a different search or browse all categories.</p>
+            <button class="btn btn-ghost" id="emptyReset" style="margin-top:1.5rem;">Browse All</button>
+          </div>
         </div>
-        <p class="footer-copy">© Turkiana — Timeless Turkish Indulgence</p>
-      </div>
-    </footer>
+      </section>
 
-  </div> <!-- /menuPage -->
+      <!-- Footer -->
+      <footer class="footer" role="contentinfo">
+        <div class="footer-inner container">
+          <div class="footer-brand" lang="en">TURKI<span>ANA</span></div>
+          <p class="footer-tagline" id="footerTagline">Luxury in Every Sip of Tradition</p>
+          <nav class="footer-contact" aria-label="Contact links">
+            <a href="https://instagram.com/turkiana.qa" target="_blank" rel="noopener noreferrer" class="footer-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-label="Instagram"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              @turkiana.qa
+            </a>
+            <a href="tel:+97451866671" class="footer-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-label="Phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              +974 5186 6671
+            </a>
+          </nav>
+          <div class="footer-ornament" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          </div>
+          <p class="footer-copy">© Turkiana — Timeless Turkish Indulgence</p>
+        </div>
+      </footer>
 
-</main>
+    </div>
+    <!-- /menuPage -->
 
-  <!-- Mobile FAB -->
-  <div class="mobile-fab" aria-hidden="true">
+  </main>
+
+  <!-- Scroll-to-top button (appears after 400px) -->
+  <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Mobile FAB — toggles between View Menu / Back to Home -->
+  <div class="mobile-fab">
     <button class="btn btn-gold" id="mobileFab">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
       </svg>
       <span id="fabLabel">View Menu</span>
     </button>
   </div>
 
-  <!-- QR Modal -->
-  <dialog class="qr-modal" id="qrModal" aria-labelledby="qrTitle" aria-describedby="qrDesc">
-    <div class="modal-inner">
-      <h2 id="qrTitle">Scan to Browse</h2>
-      <p id="qrDesc">Point your camera at the code below for the full Turkiana menu experience.</p>
+  <!-- ── MODALS ── -->
+
+  <!-- QR Code Modal -->
+  <dialog class="modal qr-modal" id="qrModal" aria-labelledby="qrTitle" aria-describedby="qrDesc">
+    <div class="modal-surface">
+      <button class="modal-x" id="qrCloseX" aria-label="Close dialog">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-ornament" aria-hidden="true">✦</div>
+      <h2 class="modal-title" id="qrTitle">Scan to Browse</h2>
+      <p class="modal-desc" id="qrDesc">Point your camera at the code below for the full Turkiana menu experience.</p>
       <div class="qr-frame">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://turkianacafe-ux.github.io/Turkiana/"
-             alt="QR code for Turkiana menu" width="200" height="200" loading="lazy"
-             onerror="this.parentElement.innerHTML='<p style=color:var(--c-text-soft);padding:1rem>QR code unavailable</p>'">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://turkianacafe-ux.github.io/Turkiana/"
+          alt="QR code linking to the Turkiana online menu"
+          width="200" height="200" loading="lazy"
+          onerror="this.parentElement.innerHTML='<p style=color:var(--c-text-soft);font-size:0.85rem;padding:2rem>QR unavailable offline</p>'"
+        >
       </div>
       <button class="btn btn-gold" id="closeModal" style="width:100%;justify-content:center;" autofocus>
         <span id="closeModalLabel">Close</span>
@@ -217,25 +363,39 @@
   </dialog>
 
   <!-- Item Detail Modal -->
-  <dialog class="item-modal" id="itemModal" aria-labelledby="itemModalTitle">
-    <div class="item-modal-inner">
+  <dialog class="modal item-modal" id="itemModal" aria-labelledby="itemModalTitle">
+    <div class="modal-surface item-modal-surface">
+      <button class="modal-x" id="itemCloseX" aria-label="Close dialog">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
       <div class="item-img-wrapper" id="itemImgWrapper"></div>
+
       <div class="item-details">
-        <h2 id="itemModalTitle"></h2>
-        <div class="item-price" id="itemModalPrice"></div>
-        <p class="item-desc" id="itemModalDesc"></p>
-        <div class="item-meta-row">
-          <span id="itemModalCal"></span>
-          <div class="card-diet-icons" id="itemModalDiet"></div>
+        <div class="item-meta-top">
+          <span class="item-cat-label" id="itemModalCat"></span>
+          <span class="item-badge-slot" id="itemModalBadge"></span>
         </div>
-        <button class="btn btn-gold" id="itemCloseModal" style="align-self: flex-start;">
-          <span id="itemCloseLabel">Close</span>
-        </button>
+        <h2 class="item-modal-title" id="itemModalTitle"></h2>
+        <p class="item-modal-desc" id="itemModalDesc"></p>
+
+        <div class="item-price-row">
+          <span class="item-modal-price" id="itemModalPrice"></span>
+          <span class="item-modal-cal" id="itemModalCal"></span>
+        </div>
+
+        <div class="item-diet-row" id="itemModalDiet" role="list" aria-label="Dietary information"></div>
+
+        <div class="item-modal-actions">
+          <button class="btn btn-gold" id="itemCloseModal">
+            <span id="itemCloseLabel">Close</span>
+          </button>
+        </div>
       </div>
     </div>
   </dialog>
 
-  <!-- Application logic (main first, then enhancements) -->
+  <!-- Scripts — deferred for best performance -->
   <script src="app.js" defer></script>
   <script src="app-enhancements.js" defer></script>
 </body>
