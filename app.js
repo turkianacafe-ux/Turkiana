@@ -6,6 +6,7 @@
   ============================================================ */
   const CURRENCY = 'QAR';
   const IMG_BASE = 'https://turkianacafe-ux.github.io/Turkiana/';
+  
 
   const CATEGORIES = [
     { key:'all',        en:'All',               ar:'الكل' },
@@ -103,7 +104,10 @@
     {id:'cro4',  cat:'croissant', en:'Almond Croissant',                ar:'كرواسون لوز',                descEn:'Croissant filled with almond frangipane cream and topped with flaked almonds.',             descAr:'كرواسون محشو بكريمة اللوز.', price:20, img:'Almondcroissant.jfif',        cal:'400 kcal',diet:['vegetarian','contains-nuts'],                   badge:null},
     {id:'cro5',  cat:'croissant', en:'Cinnamon Danish',                 ar:'دانش قرفة',                  descEn:'Cinnamon sugar spiral danish, soft and fragrant.',                                          descAr:'دانش قرفة وسكر بشكل حلزوني.', price:20, img:'Cinnamondanish.jfif',        cal:'390 kcal',diet:['vegetarian'],                                    badge:null},
   ];
-
+// Expose for enhancements
+window.MENU_ITEMS = MENU_ITEMS;
+window.IMG_BASE = IMG_BASE;
+window.openItemModal = (id, el) => openItemModal(id, el); // also expose modal
   const ITEM_MAP = Object.fromEntries(MENU_ITEMS.map(item => [item.id, item]));
 
   /* ============================================================
