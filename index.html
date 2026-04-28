@@ -3,9 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts — a modern tribute to Istanbul's grand café culture.">
-  <meta name="theme-color" content="#C4963E" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#9E7420" media="(prefers-color-scheme: light)">
+  <meta name="description" content="Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts — a modern tribute to Istanbul's grand café culture. Located in Doha, Qatar.">
+  <meta name="theme-color" content="#c6a15b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#9e7420" media="(prefers-color-scheme: light)">
+  <meta name="robots" content="index, follow">
+  <meta name="keywords" content="Turkish coffee, baklava, Ottoman desserts, Doha, Qatar, luxury café, Turkiana">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://turkianacafe-ux.github.io/Turkiana/">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="restaurant">
+  <meta property="og:site_name"   content="Turkiana">
+  <meta property="og:title"       content="Turkiana · Turkish Café & Desserts — Doha">
+  <meta property="og:description" content="Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts. A modern tribute to Istanbul's grand café culture.">
+  <meta property="og:url"         content="https://turkianacafe-ux.github.io/Turkiana/">
+  <meta property="og:image"       content="https://turkianacafe-ux.github.io/Turkiana/assets/images/Carrotslice.webp">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale"      content="en_QA">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Turkiana · Turkish Café & Desserts">
+  <meta name="twitter:description" content="Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts in Doha.">
+  <meta name="twitter:image"       content="https://turkianacafe-ux.github.io/Turkiana/assets/images/Carrotslice.webp">
+
+  <!-- JSON-LD: Café Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CafeOrCoffeeShop",
+    "name": "Turkiana",
+    "description": "Luxury Turkish coffee, hand-rolled baklava & Ottoman desserts — a modern tribute to Istanbul's grand café culture.",
+    "url": "https://turkianacafe-ux.github.io/Turkiana/",
+    "telephone": "+97451866671",
+    "image": "https://turkianacafe-ux.github.io/Turkiana/assets/images/Carrotslice.webp",
+    "priceRange": "$$",
+    "servesCuisine": ["Turkish", "Ottoman", "Desserts"],
+    "sameAs": ["https://instagram.com/turkiana.qa"],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Doha",
+      "addressCountry": "QA"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Sunday"],
+        "opens": "08:00",
+        "closes": "24:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Friday","Saturday"],
+        "opens": "08:00",
+        "closes": "01:00"
+      }
+    ],
+    "menu": "https://turkianacafe-ux.github.io/Turkiana/#menu",
+    "hasMap": "https://maps.google.com/?q=Turkiana+Doha+Qatar"
+  }
+  </script>
 
   <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,7 +75,7 @@
   <!-- PWA manifest -->
   <link rel="manifest" href="/manifest.json">
 
-  <title>Turkiana · Turkish Café &amp; Desserts</title>
+  <title>Turkiana · Turkish Café & Desserts — Doha</title>
 
   <!-- Theme flash prevention — must run before paint -->
   <script>
@@ -36,6 +95,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://api.qrserver.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <!-- Hero image preload (LCP optimisation) -->
+  <link rel="preload" as="image" href="https://turkianacafe-ux.github.io/Turkiana/assets/images/Carrotslice.webp" fetchpriority="high">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -118,6 +180,9 @@
         <div class="hero-bg" id="heroBg" role="img" aria-label="Luxury Turkish coffee and baklava"></div>
         <div class="hero-overlay" aria-hidden="true"></div>
 
+        <!-- Steam particles (respects reduced-motion via CSS) -->
+        <div class="steam-wrap" aria-hidden="true" id="steamWrap"></div>
+
         <div class="hero-content">
           <p class="hero-eyebrow" id="heroEyebrow">
             <span class="eyebrow-line" aria-hidden="true"></span>
@@ -125,7 +190,6 @@
             <span class="eyebrow-line" aria-hidden="true"></span>
           </p>
 
-          <!-- Title split into chars by JS for staggered reveal -->
           <h1 class="hero-title" id="heroTitle" aria-label="TURKIANA">TURKIANA</h1>
 
           <p class="hero-tagline" id="heroTagline">Luxury in Every Sip of Tradition</p>
@@ -149,17 +213,17 @@
           </div>
 
           <!-- Proof bar -->
-          <div class="hero-proof" aria-hidden="true">
+          <div class="hero-proof" aria-label="Key facts about Turkiana">
             <div class="proof-item">
               <strong class="proof-num">60+</strong>
               <span class="proof-label">Menu Items</span>
             </div>
-            <div class="proof-divider"></div>
+            <div class="proof-divider" aria-hidden="true"></div>
             <div class="proof-item">
               <strong class="proof-num">8</strong>
               <span class="proof-label">Categories</span>
             </div>
-            <div class="proof-divider"></div>
+            <div class="proof-divider" aria-hidden="true"></div>
             <div class="proof-item">
               <strong class="proof-num">Ottoman</strong>
               <span class="proof-label">Heritage</span>
@@ -190,7 +254,7 @@
             <p class="section-label" id="spotlightLabel">Today's Picks</p>
             <h2 class="section-title" id="spotlight-heading">Chef's <em>Recommendations</em></h2>
           </header>
-          <div class="spotlight-grid" id="spotlightGrid" role="list" aria-label="Featured items"></div>
+          <ul class="spotlight-grid" id="spotlightGrid" aria-label="Featured items"></ul>
         </div>
       </section>
 
@@ -227,9 +291,9 @@
           </header>
 
           <!-- Sticky category bar -->
-          <div class="category-bar" id="categoryBar" role="navigation" aria-label="Menu categories">
+          <nav class="category-bar" id="categoryBar" aria-label="Menu categories">
             <div class="category-scroller" id="categoryScroller" role="group" aria-label="Filter by category" aria-controls="menuGrid"></div>
-          </div>
+          </nav>
 
           <!-- Search & filter toolbar -->
           <div class="filter-toolbar" role="search" aria-label="Search and filter menu">
@@ -270,18 +334,31 @@
             </div>
 
             <div class="toolbar-divider" aria-hidden="true"></div>
+
+            <!-- Price range filter -->
+            <div class="price-filter" id="priceFilter">
+              <label for="priceSelect" id="priceLabel">Price:</label>
+              <select id="priceSelect" class="price-select" aria-label="Filter by price range">
+                <option value="all">All</option>
+                <option value="0-25">Under 25 QAR</option>
+                <option value="25-40">25–40 QAR</option>
+                <option value="40-60">40–60 QAR</option>
+                <option value="60-999">60+ QAR</option>
+              </select>
+            </div>
+
+            <div class="toolbar-divider" aria-hidden="true"></div>
             <span class="result-count" id="resultCount" role="status" aria-live="polite" aria-atomic="true"></span>
           </div>
 
           <!-- Menu grid — data-view set by JS ("grid" | "list") -->
-          <div
+          <ul
             class="menu-grid is-loading"
             id="menuGrid"
-            role="list"
             aria-label="Menu items"
             aria-busy="true"
             data-view="grid"
-          ></div>
+          ></ul>
 
           <!-- Empty state -->
           <div class="empty-state" id="emptyState" role="status" aria-live="polite" aria-atomic="true" hidden>
@@ -291,6 +368,64 @@
             <p class="empty-title" id="emptyTitle">Nothing found</p>
             <p class="empty-sub" id="emptySub">Try a different search or browse all categories.</p>
             <button class="btn btn-ghost" id="emptyReset" style="margin-top:1.5rem;">Browse All</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── OPENING HOURS + LOCATION ── -->
+      <section class="hours-section fade-in" aria-labelledby="hours-heading">
+        <div class="container">
+          <div class="hours-inner">
+            <!-- Hours table -->
+            <div>
+              <header class="section-header">
+                <p class="section-label">Visit Us</p>
+                <h2 class="section-title" id="hours-heading">Opening <em>Hours</em></h2>
+              </header>
+              <div class="hours-table" id="hoursTable">
+                <div class="hours-row" data-days="mon,tue,wed,thu,sun">
+                  <span class="hours-day">Mon – Thu &amp; Sun</span>
+                  <span class="hours-time">8:00 AM – 12:00 AM</span>
+                </div>
+                <div class="hours-row" data-days="fri,sat">
+                  <span class="hours-day">Fri &amp; Sat</span>
+                  <span class="hours-time">8:00 AM – 1:00 AM</span>
+                </div>
+              </div>
+            </div>
+            <!-- Location -->
+            <div class="location-card">
+              <header class="section-header">
+                <p class="section-label">Find Us</p>
+                <h2 class="section-title">Our <em>Location</em></h2>
+              </header>
+              <div class="location-info">
+                <p class="location-name">Turkiana Doha</p>
+                <address class="location-address">
+                  Doha, Qatar<br>
+                  Open daily — see hours
+                </address>
+                <a href="tel:+97451866671" class="location-phone" aria-label="Call Turkiana on +974 5186 6671">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.21 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                  +974 5186 6671
+                </a>
+              </div>
+              <a
+                href="https://maps.google.com/?q=Turkiana+Doha+Qatar"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="maps-btn"
+                aria-label="Open Turkiana in Google Maps"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                Open in Google Maps
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -309,6 +444,18 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-label="Phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               +974 5186 6671
             </a>
+            <a
+              href="https://maps.google.com/?q=Turkiana+Doha+Qatar"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-link"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-label="Maps">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              Doha, Qatar
+            </a>
           </nav>
           <div class="footer-ornament" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
@@ -322,13 +469,13 @@
 
   </main>
 
-  <!-- Scroll-to-top button (appears after 400px) -->
+  <!-- Scroll-to-top button -->
   <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg>
   </button>
 
-  <!-- Mobile FAB — toggles between View Menu / Back to Home -->
-  <div class="mobile-fab">
+  <!-- Mobile FAB -->
+  <div class="mobile-fab" aria-hidden="false">
     <button class="btn btn-gold" id="mobileFab">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
         <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
@@ -384,12 +531,13 @@
           <span class="item-modal-cal" id="itemModalCal"></span>
         </div>
 
-        <div class="item-diet-row" id="itemModalDiet" role="list" aria-label="Dietary information"></div>
+        <ul class="item-diet-row" id="itemModalDiet" aria-label="Dietary information"></ul>
 
         <div class="item-modal-actions">
           <button class="btn btn-gold" id="itemCloseModal">
             <span id="itemCloseLabel">Close</span>
           </button>
+          <!-- Share button injected by JS if Web Share API available -->
         </div>
       </div>
     </div>
@@ -397,6 +545,5 @@
 
   <!-- Scripts — deferred for best performance -->
   <script src="app.js" defer></script>
-  <script src="app-enhancements.js" defer></script>
 </body>
 </html>
