@@ -5,7 +5,7 @@
 ============================================================ */
 'use strict';
 
-const CACHE_VERSION = 'turkiana-v1';
+const CACHE_VERSION = 'turkiana-v2';
 
 const SHELL_ASSETS = [
   './',
@@ -126,11 +126,11 @@ async function networkFirstWithFallback(request) {
     })
     .catch(() => null);
 
-  if (cached) {
-    // Return cached immediately, refresh in background
-    fetchPromise; // fire-and-forget
+if (cached) {
+    // Fire background update, ignore failures
+    fetchPromise.catch(() => {});
     return cached;
-  }
+}
 
   const response = await fetchPromise;
   return response || imageFallback();
