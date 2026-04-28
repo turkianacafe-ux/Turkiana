@@ -115,6 +115,12 @@ window.openItemModal = (id, el) => openItemModal(id, el); // also expose modal
   ============================================================ */
   const I18N = {
     en: {
+      emptyReset: 'Browse All',
+spotlightLabel: "Today's Picks",
+spotlightHeading: "Chef's <em>Recommendations</em>",
+dietVegan: 'Vegan',
+dietGF: 'GF',
+qrBtnLabel: 'QR Menu',
       tagline:'Luxury in Every Sip of Tradition', eyebrow:'Est. Ottoman Heritage',
       viewMenu:'View Menu', backToHome:'Home',
       aboutLabel:'Our Heritage', menuLabel:'Selections',
@@ -130,6 +136,12 @@ window.openItemModal = (id, el) => openItemModal(id, el); // also expose modal
       itemCloseLabel:'Close',
     },
     ar: {
+      emptyReset: 'تصفح الكل',
+spotlightLabel: 'اختيارات اليوم',
+spotlightHeading: 'توصيات <em>الشيف</em>',
+dietVegan: 'نباتي',
+dietGF: 'خالي من الغلوتين',
+qrBtnLabel: 'قائمة QR',
       tagline:'الفخامة في كل رشفة من التراث', eyebrow:'تراث عثماني أصيل',
       viewMenu:'عرض القائمة', backToHome:'الرئيسية',
       aboutLabel:'تراثنا', menuLabel:'التشكيلة',
