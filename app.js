@@ -117,9 +117,9 @@
   ============================================================ */
   const I18N = {
     en: {
-      emptyReset:'Browse All', spotlightLabel:"Today's Picks", spotlightHeading:"Chef's <em>Recommendations</em>",
+      emptyReset:'Browse All', spotlightLabel:"Today's Picks", spotlightHeading:"Our <em>Recommendations</em>",
       dietVegan:'Vegan', dietGF:'GF', qrBtnLabel:'QR Menu',
-      tagline:'Luxury in Every Sip of Tradition', eyebrow:'Est. Ottoman Heritage',
+      tagline:'Authentic in Every Sip of Tradition', eyebrow:'Est. Ottoman Heritage',
       viewMenu:'View Menu', backToHome:'Home',
       aboutLabel:'Our Heritage', menuLabel:'Selections',
       aboutCaption:'Hand-crafted Ottoman baklava, daily',
@@ -130,7 +130,7 @@
       emptyTitle:'Nothing found', emptySub:'Try a different search or browse all categories.',
       langLabel:'Switch to Arabic', themeLight:'Switch to light mode', themeDark:'Switch to dark mode',
       qrTitle:'Scan to Browse', qrDesc:'Point your camera at the code below for the full Turkiana menu experience.',
-      closeModal:'Close', fabLabel:'View Menu', footerTagline:'Luxury in Every Sip of Tradition',
+      closeModal:'Close', fabLabel:'View Menu', footerTagline:'Authentic in Every Sip of Tradition',
       itemCloseLabel:'Close',
     },
     ar: {
