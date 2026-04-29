@@ -471,7 +471,7 @@ qrBtnLabel: 'قائمة QR',
   /* ============================================================
      LANGUAGE
   ============================================================ */
-  function applyLanguage() {
+    function applyLanguage() {
     const lang = state.lang;
     const isAr = lang === 'ar';
     const t = I18N[lang];
@@ -483,6 +483,7 @@ qrBtnLabel: 'قائمة QR',
     dom.footerTagline.textContent = t.footerTagline;
     dom.langToggle.setAttribute('aria-label', t.langLabel);
     dom.menuLabel.textContent     = t.menuLabel;
+
     const searchInputEl = document.getElementById('searchInput');
     if (searchInputEl) searchInputEl.placeholder = t.searchPlaceholder;
     const emptyTitleEl = document.getElementById('emptyTitle');
@@ -498,16 +499,37 @@ qrBtnLabel: 'قائمة QR',
     dom.statLabel1.textContent   = t.statLabel1;
     dom.statLabel2.textContent   = t.statLabel2;
     dom.statLabel3.textContent   = t.statLabel3;
+
+    // ── missing strings ──
+    const emptyResetEl = document.getElementById('emptyReset');
+    if (emptyResetEl) emptyResetEl.textContent = t.emptyReset;
+
+    const spotlightLabelEl = document.getElementById('spotlightLabel');
+    if (spotlightLabelEl) spotlightLabelEl.textContent = t.spotlightLabel;
+
+    const spotlightHeadingEl = document.getElementById('spotlight-heading');
+    if (spotlightHeadingEl) spotlightHeadingEl.innerHTML = t.spotlightHeading;
+
+    const dietChips = document.querySelectorAll('.diet-chip');
+    dietChips.forEach(chip => {
+      if (chip.dataset.diet === 'vegan') chip.textContent = t.dietVegan;
+      if (chip.dataset.diet === 'gluten-free') chip.textContent = t.dietGF;
+    });
+
+    const qrBtnEl = document.getElementById('qrBtn');
+    if (qrBtnEl) qrBtnEl.textContent = t.qrBtnLabel;
+
+    // Fab label
     const menuPageEl = document.getElementById('menuPage');
     dom.fabLabel.textContent = (menuPageEl && !menuPageEl.classList.contains('hidden'))
       ? t.backToHome
       : t.viewMenu;
+
     updateCardTexts();
     buildCategoryPills();
     buildTicker();
     applyFilter();
   }
-
   /* ============================================================
      THEME
   ============================================================ */
