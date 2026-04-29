@@ -1014,12 +1014,16 @@
       });
     }
 
-    // Empty-reset button
+    // Empty-reset button (also clears dietary filter)
     const emptyResetBtn = document.getElementById('emptyReset');
     if (emptyResetBtn) {
       emptyResetBtn.addEventListener('click', () => {
         const searchInputEl = document.getElementById('searchInput');
         if (searchInputEl) searchInputEl.value = '';
+        // Also reset dietary filter if available
+        if (window.resetDietFilter) {
+          window.resetDietFilter();
+        }
         setState({ search: '', category: 'all' });
       });
     }
