@@ -1,6 +1,11 @@
-// app-enhancements.js
+/* ============================================================
+   TURKIANA — app-enhancements.js
+   Scroll-to-top, view toggle, dietary filter, spotlight,
+   and smart nav hide-on-scroll.
+============================================================ */
 (function () {
   'use strict';
+
   // ── Scroll-to-top button ──────────────────────────────
   const scrollBtn = document.getElementById('scrollTopBtn');
   if (scrollBtn) {
@@ -33,8 +38,9 @@
 
   // ── Dietary filter chips ──────────────────────────────
   const dietChips = document.getElementById('dietChips');
+  let activeDiet = null;
+
   if (dietChips) {
-    let activeDiet = null;
     dietChips.addEventListener('click', (e) => {
       const chip = e.target.closest('.diet-chip');
       if (!chip) return;
@@ -53,53 +59,74 @@
 
   function filterByDiet(diet) {
     const cards = document.querySelectorAll('.menu-card');
+    let visible = 0;
     cards.forEach(card => {
-      if (!diet) {
-        card.style.display = '';
+      // Respect main filter (category/search)
+      if (card.dataset.hidden === 'true') {
+        card.style.display = 'none';
         return;
       }
-      // Read dietary info from the data-diet attributes inside the card
-      const dots = card.querySelectorAll('.diet-dot');
-      const hasDiet = Array.from(dots).some(dot => dot.dataset.diet === diet);
-      card.style.display = hasDiet ? '' : 'none';
+      if (!diet) {
+        card.style.display = '';
+        visible++;
+      } else {
+        const dots = card.querySelectorAll('.diet-dot');
+        const hasDiet = Array.from(dots).some(dot => dot.dataset.diet === diet);
+        card.style.display = hasDiet ? '' : 'none';
+        if (hasDiet) visible++;
+      }
     });
+
     // Update result count
-    const visible = document.querySelectorAll('.menu-card[style*="display: none"], .menu-card[data-hidden="true"]').length;
-    const total = document.querySelectorAll('.menu-card').length;
+    const t = (window.I18N || {})[window.state?.lang] || { resultSingular: 'item', resultPlural: 'items' };
     const countEl = document.getElementById('resultCount');
-    if (countEl) countEl.textContent = `${total - visible} items`;
+    if (countEl) countEl.textContent = `${visible} ${visible === 1 ? t.resultSingular : t.resultPlural}`;
   }
 
-  // ── Spotlight section ──────────────────────────────────
+  // ── Spotlight section (Chef's Recommendations) ────────
   function buildSpotlight() {
     const grid = document.getElementById('spotlightGrid');
-    if (!grid) return;
-    const featured = window.MENU_ITEMS?.filter(i => i.badge) || [];
+    if (!grid || !window.MENU_ITEMS) return;
+
+    const featured = window.MENU_ITEMS.filter(i => i.badge === 'bestseller' || i.badge === 'signature');
+    const itemsToShow = featured.slice(0, 3);
     const frag = document.createDocumentFragment();
-    featured.slice(0, 3).forEach(item => {
+
+    itemsToShow.forEach(item => {
       const card = document.createElement('div');
       card.className = 'spotlight-card';
       card.style.cursor = 'pointer';
-      card.innerHTML = `
-        <img src="${window.IMG_BASE || ''}${item.img}" alt="${item.en}" loading="lazy">
-        <div class="spotlight-card-overlay">
-          <span class="spotlight-badge">${item.badge}</span>
-          <p class="spotlight-name">${item.en}</p>
-          <span class="spotlight-price">${item.price} QAR</span>
-        </div>
+
+      const img = document.createElement('img');
+      img.src = (window.IMG_BASE || '') + item.img;
+      img.alt = item.en;
+      img.loading = 'lazy';
+      img.onload = () => img.classList.add('is-loaded');
+      img.onerror = () => { img.style.opacity = '0.3'; };
+      card.appendChild(img);
+
+      const overlay = document.createElement('div');
+      overlay.className = 'spotlight-card-overlay';
+      overlay.innerHTML = `
+        <span class="spotlight-badge">${item.badge}</span>
+        <p class="spotlight-name">${item.en}</p>
+        <span class="spotlight-price">${item.price} QAR</span>
       `;
+      card.appendChild(overlay);
+
       card.addEventListener('click', () => {
-        // Open item modal using existing function (if accessible)
         if (typeof window.openItemModal === 'function') {
           window.openItemModal(item.id, card);
         }
       });
       frag.appendChild(card);
     });
+
+    grid.innerHTML = '';
     grid.appendChild(frag);
   }
 
-  // ── Smart nav (hide on scroll down, show on scroll up) ─
+  // ── Smart nav hide on scroll down ──────────────────────
   let lastScroll = 0;
   window.addEventListener('scroll', () => {
     const header = document.getElementById('siteHeader');
@@ -115,13 +142,9 @@
     lastScroll = currentScroll;
   }, { passive: true });
 
-  // Initialize
+  // ── Init ──────────────────────────────────────────────
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      buildSpotlight();
-      // Expose global functions for item modal if needed
-      window.openItemModal = window.openItemModal; // already defined? but from app.js scope
-    });
+    document.addEventListener('DOMContentLoaded', buildSpotlight);
   } else {
     buildSpotlight();
   }
