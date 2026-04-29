@@ -777,7 +777,6 @@ body.cursor-ready .cursor-ring { opacity: 1; }
   cursor: pointer;
   box-shadow: var(--sh-card);
   transition: box-shadow var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
-  role: listitem;
 }
 .spotlight-card:hover {
   box-shadow: var(--sh-hover);
