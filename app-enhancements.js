@@ -83,6 +83,16 @@
     if (countEl) countEl.textContent = `${visible} ${visible === 1 ? t.resultSingular : t.resultPlural}`;
   }
 
+  // Expose a global function to reset the diet filter
+  window.resetDietFilter = function() {
+    activeDiet = null;
+    const dietChips = document.getElementById('dietChips');
+    if (dietChips) {
+      dietChips.querySelectorAll('.diet-chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
+    }
+    filterByDiet(null);
+  };
+
   // ── Spotlight section (Chef's Recommendations) ────────
   function buildSpotlight() {
     const grid = document.getElementById('spotlightGrid');
