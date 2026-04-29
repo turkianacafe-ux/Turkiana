@@ -6,7 +6,6 @@
   ============================================================ */
   const CURRENCY = 'QAR';
   const IMG_BASE = 'https://turkianacafe-ux.github.io/Turkiana/';
-  
 
   const CATEGORIES = [
     { key:'all',        en:'All',               ar:'الكل' },
@@ -70,7 +69,9 @@
     {id:'spec1', cat:'specialty', en:'V60 Pour Over',                   ar:'V60 بور أوفر',               descEn:'Single origin specialty beans brewed by hand with the V60 pour-over method.',                 descAr:'حبوب قهوة مختصة تُحضر بالتقطير اليدوي.', price:33, img:'V60.webp',                  cal:'2 kcal',  diet:['vegan'],                                         badge:'signature'},
     {id:'spec2', cat:'specialty', en:'Ice Drip',                        ar:'آيس دريب',                   descEn:'8-hour cold drip extraction — ultra-clear, ultra-delicate.',                                 descAr:'استخلاص بطيء بالتنقيط على الثلج لمدة 8 ساعات.', price:35, img:'Icedrip.jpg',               cal:'2 kcal',  diet:['vegan'],                                         badge:'signature'},
     {id:'spec3', cat:'specialty', en:'Cold Brew',                       ar:'كولد برو',                   descEn:'18+ hour cold steep for an ultra-smooth, low-acid coffee concentrate.',                     descAr:'نقع بارد لأكثر من 18 ساعة لقهوة ناعمة كالحرير.', price:37, img:'Coldbrew.webp',              cal:'2 kcal',  diet:['vegan'],                                         badge:'bestseller'},
-{id:'ref16', cat:'refreshers',en:'Lemonade',                        ar:'ليمونادة',                   descEn:'Zesty freshly squeezed lemon drink, chilled and refreshing.',                                descAr:'مشروب ليمون منعش.', price:37, img:'Lemonade.png',               cal:'120 kcal',diet:[],                                                 badge:null},{id:'ref15', cat:'refreshers',en:'Orange Juice',                    ar:'عصير برتقال',                descEn:'Freshly squeezed orange juice, nothing added.',                                              descAr:'عصير برتقال طازج معصور.', price:37, img:'Orangejuice.png',            cal:'110 kcal',diet:[],                                                 badge:null},    {id:'ref10', cat:'refreshers',en:'Cooling Breeze',                  ar:'نسيم منعش',                  descEn:'A chilled blend of citrus and refreshing herbs.',                                            descAr:'مزيج مثلج من الحمضيات والأعشاب المنعشة.', price:45, img:'Coolingbreeze.jfif',         cal:'150 kcal',diet:[],                                                 badge:null},
+    {id:'ref16', cat:'refreshers',en:'Lemonade',                        ar:'ليمونادة',                   descEn:'Zesty freshly squeezed lemon drink, chilled and refreshing.',                                descAr:'مشروب ليمون منعش.', price:37, img:'Lemonade.png',               cal:'120 kcal',diet:[],                                                 badge:null},
+    {id:'ref15', cat:'refreshers',en:'Orange Juice',                    ar:'عصير برتقال',                descEn:'Freshly squeezed orange juice, nothing added.',                                              descAr:'عصير برتقال طازج معصور.', price:37, img:'Orangejuice.png',            cal:'110 kcal',diet:[],                                                 badge:null},
+    {id:'ref10', cat:'refreshers',en:'Cooling Breeze',                  ar:'نسيم منعش',                  descEn:'A chilled blend of citrus and refreshing herbs.',                                            descAr:'مزيج مثلج من الحمضيات والأعشاب المنعشة.', price:45, img:'Coolingbreeze.jfif',         cal:'150 kcal',diet:[],                                                 badge:null},
     {id:'ref3',  cat:'refreshers',en:'Orange Earl Grey',                ar:'برتقال إيرل جراي',           descEn:'Citrus and bergamot duet in an Earl Grey base.',                                             descAr:'دوئية البرغموت والحمضيات في شاي إيرل جراي.', price:47, img:'Orangeearlygreytea.png',     cal:'2 kcal',  diet:['vegan'],                                         badge:null},
     {id:'ref6',  cat:'refreshers',en:'Blue Lagoon',                     ar:'موهيتو توت أزرق',            descEn:'Wild blueberries with fresh mint and a squeeze of lemon.',                                  descAr:'توت بري مع نعناع طازج ولمسة ليمون.', price:38, img:'Bluelagoon.jfif',            cal:'150 kcal',diet:[],                                                 badge:null},
     {id:'ref7',  cat:'refreshers',en:'Strawberry Mojito',               ar:'موهيتو فراولة',              descEn:'Fresh strawberries muddled with mint and lime.',                                             descAr:'فراولة طازجة مدقوقة مع النعناع.', price:42, img:'Strawberrymojito.png',       cal:'170 kcal',diet:[],                                                 badge:null},
@@ -104,10 +105,11 @@
     {id:'cro4',  cat:'croissant', en:'Almond Croissant',                ar:'كرواسون لوز',                descEn:'Croissant filled with almond frangipane cream and topped with flaked almonds.',             descAr:'كرواسون محشو بكريمة اللوز.', price:20, img:'Almondcroissant.jfif',        cal:'400 kcal',diet:['vegetarian','contains-nuts'],                   badge:null},
     {id:'cro5',  cat:'croissant', en:'Cinnamon Danish',                 ar:'دانش قرفة',                  descEn:'Cinnamon sugar spiral danish, soft and fragrant.',                                          descAr:'دانش قرفة وسكر بشكل حلزوني.', price:20, img:'Cinnamondanish.jfif',        cal:'390 kcal',diet:['vegetarian'],                                    badge:null},
   ];
-// Expose for enhancements
-window.MENU_ITEMS = MENU_ITEMS;
-window.IMG_BASE = IMG_BASE;
-window.openItemModal = (id, el) => openItemModal(id, el); // also expose modal
+
+  // Expose for enhancements
+  window.MENU_ITEMS = MENU_ITEMS;
+  window.IMG_BASE = IMG_BASE;
+  window.openItemModal = (id, el) => openItemModal(id, el);
   const ITEM_MAP = Object.fromEntries(MENU_ITEMS.map(item => [item.id, item]));
 
   /* ============================================================
@@ -115,12 +117,8 @@ window.openItemModal = (id, el) => openItemModal(id, el); // also expose modal
   ============================================================ */
   const I18N = {
     en: {
-      emptyReset: 'Browse All',
-spotlightLabel: "Today's Picks",
-spotlightHeading: "Chef's <em>Recommendations</em>",
-dietVegan: 'Vegan',
-dietGF: 'GF',
-qrBtnLabel: 'QR Menu',
+      emptyReset:'Browse All', spotlightLabel:"Today's Picks", spotlightHeading:"Chef's <em>Recommendations</em>",
+      dietVegan:'Vegan', dietGF:'GF', qrBtnLabel:'QR Menu',
       tagline:'Luxury in Every Sip of Tradition', eyebrow:'Est. Ottoman Heritage',
       viewMenu:'View Menu', backToHome:'Home',
       aboutLabel:'Our Heritage', menuLabel:'Selections',
@@ -136,12 +134,8 @@ qrBtnLabel: 'QR Menu',
       itemCloseLabel:'Close',
     },
     ar: {
-      emptyReset: 'تصفح الكل',
-spotlightLabel: 'اختيارات اليوم',
-spotlightHeading: 'توصيات <em>الشيف</em>',
-dietVegan: 'نباتي',
-dietGF: 'خالي من الغلوتين',
-qrBtnLabel: 'قائمة QR',
+      emptyReset:'تصفح الكل', spotlightLabel:'اختيارات اليوم', spotlightHeading:'توصيات <em>الشيف</em>',
+      dietVegan:'نباتي', dietGF:'خالي من الغلوتين', qrBtnLabel:'قائمة QR',
       tagline:'الفخامة في كل رشفة من التراث', eyebrow:'تراث عثماني أصيل',
       viewMenu:'عرض القائمة', backToHome:'الرئيسية',
       aboutLabel:'تراثنا', menuLabel:'التشكيلة',
@@ -355,7 +349,6 @@ qrBtnLabel: 'قائمة QR',
     grid.appendChild(frag);
     grid.classList.remove('is-loading');
     grid.removeAttribute('aria-busy');
-    // Trigger image shimmer tracking after cards are built
     initImageShimmerObserver();
   }
 
@@ -471,7 +464,7 @@ qrBtnLabel: 'قائمة QR',
   /* ============================================================
      LANGUAGE
   ============================================================ */
-    function applyLanguage() {
+  function applyLanguage() {
     const lang = state.lang;
     const isAr = lang === 'ar';
     const t = I18N[lang];
@@ -512,8 +505,17 @@ qrBtnLabel: 'قائمة QR',
 
     const dietChips = document.querySelectorAll('.diet-chip');
     dietChips.forEach(chip => {
-      if (chip.dataset.diet === 'vegan') chip.textContent = t.dietVegan;
-      if (chip.dataset.diet === 'gluten-free') chip.textContent = t.dietGF;
+      const pip = chip.querySelector('.diet-pip');
+      if (chip.dataset.diet === 'vegan') {
+        chip.innerHTML = '';
+        if (pip) chip.appendChild(pip);
+        chip.appendChild(document.createTextNode(' ' + t.dietVegan));
+      }
+      if (chip.dataset.diet === 'gluten-free') {
+        chip.innerHTML = '';
+        if (pip) chip.appendChild(pip);
+        chip.appendChild(document.createTextNode(' ' + t.dietGF));
+      }
     });
 
     const qrBtnEl = document.getElementById('qrBtn');
@@ -530,6 +532,7 @@ qrBtnLabel: 'قائمة QR',
     buildTicker();
     applyFilter();
   }
+
   /* ============================================================
      THEME
   ============================================================ */
@@ -722,7 +725,6 @@ qrBtnLabel: 'قائمة QR',
     const grid = document.getElementById('menuGrid');
     if (!grid) return;
     grid.querySelectorAll('img').forEach(handleImage);
-    // Set up MutationObserver for dynamically added cards
     if (!grid._shimmerObserver) {
       grid._shimmerObserver = new MutationObserver(mutations => {
         mutations.forEach(m => m.addedNodes.forEach(node => {
@@ -737,7 +739,6 @@ qrBtnLabel: 'قائمة QR',
   }
 
   function initImageErrorHandler() {
-    // Already covered by handleImage, but keep for modal images
     const itemModalEl = document.getElementById('itemModal');
     if (itemModalEl) {
       itemModalEl.addEventListener('error', e => {
@@ -840,12 +841,12 @@ qrBtnLabel: 'قائمة QR',
   }
 
   /* ============================================================
-     SYSTEM DARK-MODE SYNC (Issue #22)
+     SYSTEM DARK-MODE SYNC
   ============================================================ */
   function initSystemThemeSync() {
     const mql = window.matchMedia('(prefers-color-scheme: dark)');
     mql.addEventListener('change', e => {
-      if (localStorage.getItem('tk-dark') !== null) return; // manual override
+      if (localStorage.getItem('tk-dark') !== null) return;
       document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
     });
   }
@@ -1013,6 +1014,16 @@ qrBtnLabel: 'قائمة QR',
       });
     }
 
+    // Empty-reset button
+    const emptyResetBtn = document.getElementById('emptyReset');
+    if (emptyResetBtn) {
+      emptyResetBtn.addEventListener('click', () => {
+        const searchInputEl = document.getElementById('searchInput');
+        if (searchInputEl) searchInputEl.value = '';
+        setState({ search: '', category: 'all' });
+      });
+    }
+
     const viewMenuBtnEl = document.getElementById('viewMenuBtn');
     const navBackBtnEl  = document.getElementById('navBackBtn');
     const mobileFabEl   = document.getElementById('mobileFab');
@@ -1078,7 +1089,7 @@ qrBtnLabel: 'قائمة QR',
     try {
       applyTheme();
       initHeroTitle();
-      buildAllCards();          // now includes shimmer observer setup
+      buildAllCards();
       buildCategoryPills();
       buildTicker();
       applyLanguage();
